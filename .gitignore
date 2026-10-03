@@ -1,0 +1,61 @@
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.history/
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Dart and Flutter generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+migrate_working_dir/
+
+# Logs, reports, and generated symbolication files
+*.log
+firebase-debug.log
+app.*.symbols
+app.*.map.json
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.local
+android/key.properties
+android/app/debug
+android/app/profile
+android/app/release
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+service-account*.json
+firebase-adminsdk*.json
+
+# iOS local signing and provisioning files
+*.mobileprovision
+*.cer
+*.p8
+Pods/
+
+# Firebase local emulator state
+.firebase/
+
+# Package-manager and system metadata
+.svn/
+.swiftpm/

@@ -1,0 +1,23 @@
+# Keep text files consistent across Windows, macOS, and Linux.
+* text=auto eol=lf
+
+# Treat common project files as text.
+*.dart text
+*.yaml text
+*.yml text
+*.json text
+*.md text
+*.xml text
+*.gradle text
+*.properties text
+
+# Do not normalize binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.ttf binary
+*.otf binary
+*.pdf binary
