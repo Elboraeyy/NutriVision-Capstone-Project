@@ -24,7 +24,7 @@ NutriVision is a cross-platform Flutter application that helps users make better
 
 - Mohamed Samy
 - Hager Awadeen
-- Menna Khaled
+- Menna Khalill
 - Hoda Mohamed
 - Nancy Ahmed
 
