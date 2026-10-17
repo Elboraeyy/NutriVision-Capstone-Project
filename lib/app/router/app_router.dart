@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/sign_in_screen.dart';
+import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 
@@ -23,12 +24,18 @@ abstract final class AppRouter {
         name: 'welcome',
         builder: (context, state) => WelcomeScreen(
           onSignIn: () => context.goNamed('sign-in'),
+          onSignUp: () => context.goNamed('sign-up'),
         ),
       ),
       GoRoute(
         path: '/sign-in',
         name: 'sign-in',
         builder: (context, state) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        name: 'sign-up',
+        builder: (context, state) => const SignUpScreen(),
       ),
     ],
   );

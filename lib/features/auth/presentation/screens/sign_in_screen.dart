@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../cubit/sign_in_cubit.dart';
+import '../utils/auth_validation.dart';
 import '../widgets/auth_action_button.dart';
 import '../widgets/auth_field.dart';
 import '../widgets/auth_header.dart';
@@ -70,7 +71,25 @@ class _SignInScreenState extends State<SignInScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (!AuthValidation.isValidEmail(
+                            _emailController.text,
+                          )) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Enter your email first.'),
+                              ),
+                            );
+                            return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Password reset will be connected with Firebase.',
+                              ),
+                            ),
+                          );
+                        },
                         style: TextButton.styleFrom(
                           foregroundColor: AppColors.darkGreen,
                           padding: const EdgeInsets.only(top: 8),
@@ -89,7 +108,20 @@ class _SignInScreenState extends State<SignInScreen> {
                     const Spacer(),
                     AuthActionButton(
                       label: 'Sign In',
-                      onPressed: () {},
+                      onPressed: () {
+                        final error = AuthValidation.validateSignIn(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              error ??
+                                  'Sign in is ready for Firebase integration.',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 11),
                     GestureDetector(
