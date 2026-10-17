@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../utils/auth_validation.dart';
 import '../widgets/auth_action_button.dart';
@@ -75,7 +76,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
+                padding: EdgeInsets.fromLTRB(
+                  AppResponsive.value(context, 18),
+                  AppResponsive.value(context, 18),
+                  AppResponsive.value(context, 18),
+                  0,
+                ),
                 child: BlocBuilder<SignUpCubit, SignUpState>(
                   builder: (context, state) {
                     return CustomScrollView(

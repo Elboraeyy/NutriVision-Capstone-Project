@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
 
 class AuthActionButton extends StatelessWidget {
   const AuthActionButton({super.key, required this.label, this.onPressed});
@@ -10,14 +11,19 @@ class AuthActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = AppResponsive.scale(context);
+
     return SizedBox(
-      height: 46,
+      height: AppResponsive.value(context, 55),
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.green,
           foregroundColor: AppColors.lime,
-          padding: const EdgeInsets.only(left: 20, right: 8),
+          padding: EdgeInsets.only(
+            left: AppResponsive.value(context, 20),
+            right: AppResponsive.value(context, 8),
+          ),
           shape: const StadiumBorder(),
         ),
         child: Row(
@@ -25,20 +31,23 @@ class AuthActionButton extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontSize: AppResponsive.font(context, 15),
+                fontWeight: FontWeight.w800,
+              ),
             ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
+            DecoratedBox(
+              decoration: const BoxDecoration(
                 color: AppColors.lime,
                 shape: BoxShape.circle,
               ),
               child: SizedBox(
-                width: 32,
-                height: 32,
+                width: AppResponsive.value(context, 38),
+                height: AppResponsive.value(context, 38),
                 child: Icon(
                   Icons.arrow_forward,
                   color: AppColors.green,
-                  size: 18,
+                  size: 20 * scale,
                 ),
               ),
             ),

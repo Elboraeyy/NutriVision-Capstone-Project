@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
 import '../cubit/sign_in_cubit.dart';
 import '../utils/auth_validation.dart';
 import '../widgets/auth_action_button.dart';
@@ -41,7 +42,12 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 18, 14, 0),
+                padding: EdgeInsets.fromLTRB(
+                  AppResponsive.value(context, 18),
+                  AppResponsive.value(context, 22),
+                  AppResponsive.value(context, 18),
+                  0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -55,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         size: 17,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: AppResponsive.value(context, 16)),
                     BlocBuilder<SignInCubit, SignInState>(
                       builder: (context, state) {
                         return AuthField(
@@ -136,7 +142,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 21),
+                    SizedBox(height: AppResponsive.value(context, 21)),
                     const _HomeIndicator(),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
 
 class AuthField extends StatelessWidget {
   const AuthField({
@@ -24,37 +25,41 @@ class AuthField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = AppResponsive.scale(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.darkGreen,
-            fontSize: 10,
+            fontSize: AppResponsive.font(context, 11),
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: AppResponsive.value(context, 6)),
         SizedBox(
-          height: 37,
+          height: AppResponsive.value(context, 50),
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             obscureText: obscureText,
             cursorColor: AppColors.green,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.darkGreen,
-              fontSize: 11,
+              fontSize: AppResponsive.font(context, 13),
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 color: AppColors.mutedGreen,
-                fontSize: 11,
+                fontSize: AppResponsive.font(context, 13),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: AppResponsive.value(context, 15),
+              ),
               suffixIcon:
                   suffixIcon ??
                   (onToggleObscure == null
@@ -66,17 +71,21 @@ class AuthField extends StatelessWidget {
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
                             color: AppColors.green,
-                            size: 17,
+                            size: 19 * scale,
                           ),
                         )),
               filled: true,
               fillColor: const Color(0xFFEFF2E5),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(
+                  AppResponsive.value(context, 16),
+                ),
                 borderSide: const BorderSide(color: AppColors.borderGreen),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(
+                  AppResponsive.value(context, 16),
+                ),
                 borderSide: const BorderSide(color: AppColors.green),
               ),
             ),

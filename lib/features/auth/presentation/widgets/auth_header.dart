@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/widgets/design_status_bar.dart';
 
 class AuthHeader extends StatelessWidget {
@@ -13,23 +14,29 @@ class AuthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = AppResponsive.scale(context);
+
     return Container(
-      height: 185,
+      height: AppResponsive.value(context, 185),
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppResponsive.value(context, 16),
+      ),
+      decoration: BoxDecoration(
         color: AppColors.green,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(42),
-          bottomRight: Radius.circular(42),
+          bottomLeft: Radius.circular(AppResponsive.value(context, 46)),
+          bottomRight: Radius.circular(AppResponsive.value(context, 46)),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 35,
-            child: DesignStatusBar(assetPath: AppAssets.welcomeDeviceStatus),
+          SizedBox(
+            height: AppResponsive.value(context, 38),
+            child: const DesignStatusBar(
+              assetPath: AppAssets.welcomeDeviceStatus,
+            ),
           ),
           GestureDetector(
             onTap: () {
@@ -39,18 +46,20 @@ class AuthHeader extends StatelessWidget {
                 context.go('/welcome');
               }
             },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 7),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: AppResponsive.value(context, 7),
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.arrow_back, color: Colors.white, size: 16),
-                  SizedBox(width: 5),
+                  Icon(Icons.arrow_back, color: Colors.white, size: 17 * scale),
+                  SizedBox(width: AppResponsive.value(context, 5)),
                   Text(
                     'Back',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 10,
+                      fontSize: AppResponsive.font(context, 11),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -58,36 +67,36 @@ class AuthHeader extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 5),
-          const Text(
+          SizedBox(height: AppResponsive.value(context, 5)),
+          Text(
             'YOUR ACCOUNT',
             style: TextStyle(
               color: AppColors.lime,
-              fontSize: 9,
+              fontSize: AppResponsive.font(context, 10),
               fontWeight: FontWeight.w700,
               letterSpacing: .2,
             ),
           ),
-          const SizedBox(height: 7),
+          SizedBox(height: AppResponsive.value(context, 7)),
           Text(
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 25,
+              fontSize: AppResponsive.font(context, 27),
               fontWeight: FontWeight.w800,
               height: 1,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppResponsive.value(context, 8)),
           Text(
             subtitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.softGreen,
-              fontSize: 10,
+              fontSize: AppResponsive.font(context, 11),
               height: 1.2,
             ),
           ),
