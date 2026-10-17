@@ -133,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 suffixIcon: const Icon(
-                                  Icons.check,
+                                  Icons.mail_outline,
                                   color: AppColors.green,
                                   size: 17,
                                 ),
