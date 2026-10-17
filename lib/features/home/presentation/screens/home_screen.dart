@@ -17,7 +17,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state.status == HomeStatus.failure) {
+          AppToast.show(
+            context,
+            message: 'We could not load your dashboard. Please try again.',
+            type: AppToastType.error,
+          );
+        }
+      },
       builder: (context, state) {
         if (state.dashboard == null) {
           return Scaffold(

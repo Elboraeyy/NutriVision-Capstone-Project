@@ -70,6 +70,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: BlocListener<AuthSessionBloc, AuthSessionState>(
           listener: (context, state) {
             if (state.status == AuthSessionStatus.signedIn) {
+              AppToast.show(
+                context,
+                message: 'Account created. Let’s personalize your plan.',
+                type: AppToastType.success,
+              );
               context.read<OnboardingBloc>().add(const OnboardingReset());
               context.pushNamed('onboarding-goal');
             } else if (state.status == AuthSessionStatus.failure) {

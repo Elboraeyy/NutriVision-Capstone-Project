@@ -165,7 +165,13 @@ class _HomeContent extends StatelessWidget {
             delegate: SliverChildListDelegate([
               _ScanMealButton(onPressed: onScanMeal),
               SizedBox(height: AppResponsive.value(context, 9)),
-              const _ManualLogButton(),
+              _ManualLogButton(
+                onPressed: () => AppToast.show(
+                  context,
+                  message: 'Manual food logging will be available soon.',
+                  type: AppToastType.info,
+                ),
+              ),
               SizedBox(height: AppResponsive.value(context, 12)),
               _WaterCard(summary: dashboard.water),
               SizedBox(height: AppResponsive.value(context, 16)),
@@ -496,23 +502,33 @@ class _FilledPillButton extends StatelessWidget {
 }
 
 class _ManualLogButton extends StatelessWidget {
-  const _ManualLogButton();
+  const _ManualLogButton({required this.onPressed});
+
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: AppResponsive.value(context, 40),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.borderGreen),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
         borderRadius: BorderRadius.circular(100),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        '+  Log food manually',
-        style: TextStyle(
-          color: AppColors.darkGreen,
-          fontSize: AppResponsive.font(context, 11),
-          fontWeight: FontWeight.w600,
+        child: Ink(
+          height: AppResponsive.value(context, 40),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.borderGreen),
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: Center(
+            child: Text(
+              '+  Log food manually',
+              style: TextStyle(
+                color: AppColors.darkGreen,
+                fontSize: AppResponsive.font(context, 11),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -784,7 +800,11 @@ class _AiSuggestionCard extends StatelessWidget {
                 ),
               ),
               FilledButton(
-                onPressed: () {},
+                onPressed: () => AppToast.show(
+                  context,
+                  message: 'Adding meals to your diary will be available soon.',
+                  type: AppToastType.info,
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.lime,
                   foregroundColor: AppColors.green,

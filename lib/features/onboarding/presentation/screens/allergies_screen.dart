@@ -20,6 +20,11 @@ class AllergiesScreen extends StatelessWidget {
       child: BlocListener<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state.status == OnboardingStatus.completed) {
+            AppToast.show(
+              context,
+              message: 'Your preferences were saved successfully.',
+              type: AppToastType.success,
+            );
             context.go('/home');
           } else if (state.status == OnboardingStatus.failure) {
             AppToast.show(

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/widgets/app_action_button.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_widgets.dart';
 
@@ -49,7 +50,17 @@ class GoalScreen extends StatelessWidget {
               SizedBox(height: AppResponsive.value(context, 10)),
               AppActionButton(
                 label: 'Continue',
-                onPressed: () => context.pushNamed('food-preferences'),
+                onPressed: () {
+                  if (state.profile.goal == null) {
+                    AppToast.show(
+                      context,
+                      message: 'Choose a goal to continue.',
+                      type: AppToastType.warning,
+                    );
+                    return;
+                  }
+                  context.pushNamed('food-preferences');
+                },
               ),
               SizedBox(height: AppResponsive.value(context, 12)),
             ],

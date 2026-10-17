@@ -60,6 +60,12 @@ class _SignInScreenState extends State<SignInScreen> {
         child: BlocListener<AuthSessionBloc, AuthSessionState>(
           listener: (context, state) {
             if (state.status == AuthSessionStatus.signedIn) {
+              AppToast.show(
+                context,
+                message:
+                    'Welcome back${state.user?.name == null ? '' : ', ${state.user!.name}'}!',
+                type: AppToastType.success,
+              );
               context.go('/home');
             } else if (state.status == AuthSessionStatus.failure) {
               AppToast.show(
