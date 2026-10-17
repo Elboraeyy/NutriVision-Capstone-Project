@@ -17,7 +17,7 @@ class AuthHeader extends StatelessWidget {
     final scale = AppResponsive.scale(context);
 
     return Container(
-      height: AppResponsive.value(context, 185),
+      height: AppResponsive.value(context, 210),
       width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: AppResponsive.value(context, 16),
@@ -25,8 +25,8 @@ class AuthHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.green,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(AppResponsive.value(context, 46)),
-          bottomRight: Radius.circular(AppResponsive.value(context, 46)),
+          bottomLeft: Radius.circular(AppResponsive.value(context, 52)),
+          bottomRight: Radius.circular(AppResponsive.value(context, 52)),
         ),
       ),
       child: Column(

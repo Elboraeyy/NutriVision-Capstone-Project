@@ -21,12 +21,34 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   Timer? _timer;
+  late final AnimationController _animationController;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    final curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    );
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+    _scaleAnimation = Tween<double>(begin: .82, end: 1).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, .12),
+      end: Offset.zero,
+    ).animate(curvedAnimation);
+    _animationController.forward();
     _timer = Timer(widget.displayDuration, _openWelcomeScreen);
   }
 
@@ -38,6 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -60,11 +83,20 @@ class _SplashScreenState extends State<SplashScreen> {
               child: DesignStatusBar(assetPath: AppAssets.deviceStatus),
             ),
             Center(
-              child: SvgPicture.asset(
-                AppAssets.logo,
-                width: 213 * scale,
-                height: 168 * scale,
-                fit: BoxFit.contain,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: SvgPicture.asset(
+                      AppAssets.logo,
+                      width: 213 * scale,
+                      height: 168 * scale,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
