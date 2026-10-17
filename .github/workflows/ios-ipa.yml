@@ -1,0 +1,86 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-ipa:
+    name: Build unsigned iOS IPA
+    runs-on: macos-latest
+    timeout-minutes: 35
+    env:
+      COCOAPODS_DISABLE_STATS: 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show tool versions
+        run: |
+          flutter --version
+          xcodebuild -version
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Verify Dart code
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build iOS app without signing
+        run: flutter build ios --release --no-codesign
+
+      - name: Package IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          app_path="$(find "$GITHUB_WORKSPACE/build/ios/iphoneos" \
+            -maxdepth 1 -type d -name 'Runner.app' -print -quit)"
+
+          if [[ -z "$app_path" ]]; then
+            echo "Runner.app was not produced by the iOS build."
+            find "$GITHUB_WORKSPACE/build/ios" -maxdepth 4 -print
+            exit 1
+          fi
+
+          staging_dir="$RUNNER_TEMP/nutrivision-ipa"
+          rm -rf "$staging_dir"
+          mkdir -p "$staging_dir/Payload"
+          cp -R "$app_path" "$staging_dir/Payload/Runner.app"
+
+          ipa_path="$GITHUB_WORKSPACE/build/ios/NutriVision-unsigned.ipa"
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$staging_dir/Payload" "$ipa_path"
+
+          unzip -t "$ipa_path"
+          unzip -l "$ipa_path" | grep -q 'Payload/Runner.app/Info.plist'
+          shasum -a 256 "$ipa_path" > "$ipa_path.sha256"
+
+          echo "Created: $ipa_path"
+          ls -lh "$ipa_path" "$ipa_path.sha256"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrivision-ios-ipa-${{ github.run_number }}
+          path: |
+            build/ios/NutriVision-unsigned.ipa
+            build/ios/NutriVision-unsigned.ipa.sha256
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
