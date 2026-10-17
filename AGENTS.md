@@ -75,7 +75,7 @@ Rules for blocs/cubits:
 - Keep business decisions in use cases/domain layers where appropriate.
 - Keep widgets responsible for rendering and dispatching events only.
 - Use `BlocBuilder` for rendering state and `BlocListener`/`BlocConsumer` for
-  navigation, snackbars, and other one-time side effects.
+  navigation, `AppToast` messages, and other one-time side effects.
 - Model loading, success, and failure explicitly for async operations.
 - Keep states immutable and update them through `copyWith` or a new state.
 - Keep one source of truth for data shared by several screens. Do not create
@@ -91,6 +91,12 @@ Rules for blocs/cubits:
 - Use `AppToast` from `lib/core/widgets/app_toast.dart` for every in-app
   notification. Never introduce a raw `SnackBar` or a feature-specific toast.
   Select `success`, `error`, `warning`, or `info` according to the situation.
+- When implementing any new feature or changing an existing flow, proactively
+  review its user feedback and add the appropriate `AppToast` messages without
+  waiting for a separate request. At minimum, cover meaningful async success
+  and failure states, validation blockers, and temporary/unavailable actions.
+  Do not add noisy toasts for passive state changes that are already obvious in
+  the UI.
 - Use `AppOverlayScaffold` for screens whose header overlays scrollable content.
   Keep the space around headers transparent and allow the body to scroll behind
   the header when that is the established design.
@@ -129,6 +135,8 @@ flow, navigation behavior, or shared widget changes.
 Before declaring a task complete, verify that:
 
 - no old imports or dead state managers remain;
+- the feature gives clear feedback for meaningful success, failure,
+  validation-blocked, and unavailable-action paths through `AppToast`;
 - no generated files, build output, secrets, credentials, or personal IDE
   settings were added;
 - the existing visual behavior was not unintentionally changed;

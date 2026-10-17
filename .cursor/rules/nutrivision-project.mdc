@@ -8,4 +8,6 @@ canonical source of truth for this Flutter project. Preserve Clean Architecture
 by feature, real Bloc for shared workflows, Cubit only for small local state,
 RepositoryProvider-based dependency injection, thin screens, reusable feature
 widgets, the existing floating/transparent UI composition, and the required
-format/analyze/test checks.
+format/analyze/test checks. When implementing a feature, proactively add
+contextual `AppToast` feedback for meaningful success, failure, validation,
+and unavailable-action paths.

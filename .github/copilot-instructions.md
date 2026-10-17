@@ -6,4 +6,6 @@ Before suggesting or editing code in this repository, read the root
 Important requirements include Clean Architecture by feature, `Bloc<Event,
 State>` for shared workflows, Cubit only for small local UI state,
 `MultiRepositoryProvider` for repositories, thin screens, reusable widgets,
-and passing `dart format .`, `flutter analyze`, and `flutter test`.
+and passing `dart format .`, `flutter analyze`, and `flutter test`. For every
+new feature, proactively use `AppToast` for meaningful success, failure,
+validation, and unavailable-action feedback.
