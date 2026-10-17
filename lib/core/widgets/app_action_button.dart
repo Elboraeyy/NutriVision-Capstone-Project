@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_responsive.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_responsive.dart';
 
-class AuthActionButton extends StatelessWidget {
-  const AuthActionButton({super.key, required this.label, this.onPressed});
+/// Shared rounded primary action used across application features.
+class AppActionButton extends StatelessWidget {
+  const AppActionButton({super.key, required this.label, this.onPressed});
 
   final String label;
   final VoidCallback? onPressed;

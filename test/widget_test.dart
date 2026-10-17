@@ -14,7 +14,6 @@ void main() {
     await tester.pumpWidget(const NutriVisionApp());
 
     expect(find.byType(SplashScreen), findsOneWidget);
-    expect(find.text('9:41'), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 1200));
     await tester.pumpAndSettle();

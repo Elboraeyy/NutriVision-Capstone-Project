@@ -6,14 +6,15 @@ import 'app_colors.dart';
 /// element is intentionally unique, while shared values stay centralized.
 abstract final class AppTheme {
   static ThemeData get light {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.green,
-      brightness: Brightness.light,
-    ).copyWith(
-      primary: AppColors.green,
-      onPrimary: Colors.white,
-      surface: AppColors.cream,
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: AppColors.green,
+          brightness: Brightness.light,
+        ).copyWith(
+          primary: AppColors.green,
+          onPrimary: Colors.white,
+          surface: AppColors.cream,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -34,6 +35,20 @@ abstract final class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.green, width: 1.5),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.green,
+          foregroundColor: AppColors.lime,
+          shape: const StadiumBorder(),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.green,
+          foregroundColor: AppColors.lime,
+          shape: const StadiumBorder(),
         ),
       ),
     );

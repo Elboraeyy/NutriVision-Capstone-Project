@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
-import '../../../../core/widgets/design_status_bar.dart';
+import '../../../../core/theme/app_system_ui.dart';
+import '../../../../core/widgets/app_green_header.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onSignIn, this.onSignUp});
@@ -65,123 +67,75 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.cream,
-      body: Column(
-        children: [
-          FadeTransition(
-            opacity: _headerFade,
-            child: SlideTransition(
-              position: _headerSlide,
-              child: const _WelcomeHeader(),
-            ),
-          ),
-          Expanded(
-            child: FadeTransition(
-              opacity: _contentFade,
-              child: SlideTransition(
-                position: _contentSlide,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppResponsive.value(context, 20),
-                    AppResponsive.value(context, 18),
-                    AppResponsive.value(context, 20),
-                    0,
-                  ),
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const _Introduction(),
-                            const Spacer(),
-                            _EntryActions(
-                              onSignIn: widget.onSignIn,
-                              onSignUp: widget.onSignUp,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    final isCompact = MediaQuery.sizeOf(context).height < 870;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppSystemUi.greenHeader,
+      child: Scaffold(
+        backgroundColor: AppColors.cream,
+        body: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              FadeTransition(
+                opacity: _headerFade,
+                child: SlideTransition(
+                  position: _headerSlide,
+                  child: const AppGreenHeader(
+                    title: 'NutriVision',
+                    subtitle: 'A little clarity. Every day.',
+                    height: 175,
+                    cornerRadius: 70,
                   ),
                 ),
               ),
-            ),
-          ),
-          const _HomeIndicatorArea(),
-        ],
-      ),
-    );
-  }
-}
-
-class _WelcomeHeader extends StatelessWidget {
-  const _WelcomeHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: AppResponsive.value(context, 210),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.green,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(AppResponsive.value(context, 70)),
-          bottomRight: Radius.circular(AppResponsive.value(context, 70)),
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: AppResponsive.value(context, 10),
-            right: AppResponsive.value(context, 10),
-            height: AppResponsive.value(context, 44),
-            child: const DesignStatusBar(
-              assetPath: AppAssets.welcomeDeviceStatus,
-            ),
-          ),
-          Positioned.fill(
-            top: AppResponsive.value(context, 44),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'NutriVision',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: AppResponsive.font(context, 27),
-                      fontWeight: FontWeight.w800,
-                      height: 1.2,
+              Expanded(
+                child: FadeTransition(
+                  opacity: _contentFade,
+                  child: SlideTransition(
+                    position: _contentSlide,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        AppResponsive.value(context, 20),
+                        AppResponsive.value(context, 18),
+                        AppResponsive.value(context, 20),
+                        0,
+                      ),
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _Introduction(compact: isCompact),
+                                const Spacer(),
+                                _EntryActions(
+                                  compact: isCompact,
+                                  onSignIn: widget.onSignIn,
+                                  onSignUp: widget.onSignUp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: AppResponsive.value(context, 12)),
-                  Text(
-                    'A little clarity. Every day.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.softGreen,
-                      fontSize: AppResponsive.font(context, 12),
-                      fontWeight: FontWeight.w400,
-                      height: 1.2,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
 class _Introduction extends StatelessWidget {
-  const _Introduction();
+  const _Introduction({this.compact = false});
+
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +149,7 @@ class _Introduction extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: AppResponsive.value(context, 220),
+          height: AppResponsive.value(context, compact ? 195 : 220),
           child: Center(
             child: Image.asset(
               AppAssets.foodIllustration,
@@ -205,10 +159,10 @@ class _Introduction extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: AppResponsive.value(context, 14)),
+        SizedBox(height: AppResponsive.value(context, compact ? 10 : 14)),
         const _ValueProposition(),
-        SizedBox(height: AppResponsive.value(context, 18)),
-        const _Benefits(),
+        SizedBox(height: AppResponsive.value(context, compact ? 12 : 18)),
+        _Benefits(compact: compact),
       ],
     );
   }
@@ -259,30 +213,35 @@ class _ValueProposition extends StatelessWidget {
 }
 
 class _Benefits extends StatelessWidget {
-  const _Benefits();
+  const _Benefits({this.compact = false});
+
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: _Benefit(
+            compact: compact,
             backgroundColor: AppColors.softGreen,
             assetPath: AppAssets.scanLine,
             label: 'Scan meals',
           ),
         ),
         SizedBox(width: AppResponsive.value(context, 9)),
-        const Expanded(
+        Expanded(
           child: _Benefit(
+            compact: compact,
             backgroundColor: AppColors.yellow,
             assetPath: AppAssets.utensils,
             label: 'Find recipes',
           ),
         ),
         SizedBox(width: AppResponsive.value(context, 9)),
-        const Expanded(
+        Expanded(
           child: _Benefit(
+            compact: compact,
             backgroundColor: AppColors.peach,
             assetPath: AppAssets.sprout,
             label: 'Your goals',
@@ -295,6 +254,7 @@ class _Benefits extends StatelessWidget {
 
 class _Benefit extends StatelessWidget {
   const _Benefit({
+    this.compact = false,
     required this.backgroundColor,
     required this.assetPath,
     required this.label,
@@ -303,11 +263,12 @@ class _Benefit extends StatelessWidget {
   final Color backgroundColor;
   final String assetPath;
   final String label;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppResponsive.value(context, 72),
+      height: AppResponsive.value(context, compact ? 66 : 72),
       padding: EdgeInsets.all(AppResponsive.value(context, 13)),
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -340,8 +301,9 @@ class _Benefit extends StatelessWidget {
 }
 
 class _EntryActions extends StatelessWidget {
-  const _EntryActions({this.onSignIn, this.onSignUp});
+  const _EntryActions({this.compact = false, this.onSignIn, this.onSignUp});
 
+  final bool compact;
   final VoidCallback? onSignIn;
   final VoidCallback? onSignUp;
 
@@ -351,14 +313,16 @@ class _EntryActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _ActionButton(
+          compact: compact,
           label: 'Sign Up',
           labelColor: AppColors.lime,
           backgroundColor: AppColors.green,
           circleColor: AppColors.lime,
           onPressed: onSignUp,
         ),
-        SizedBox(height: AppResponsive.value(context, 11)),
+        SizedBox(height: AppResponsive.value(context, compact ? 8 : 11)),
         _ActionButton(
+          compact: compact,
           label: 'Sign In',
           labelColor: AppColors.green,
           backgroundColor: AppColors.cream,
@@ -366,13 +330,13 @@ class _EntryActions extends StatelessWidget {
           borderColor: AppColors.borderGreen,
           onPressed: onSignIn,
         ),
-        SizedBox(height: AppResponsive.value(context, 11)),
+        SizedBox(height: AppResponsive.value(context, compact ? 8 : 11)),
         Text(
           'Your preferences. Your pace.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.mutedGreen,
-            fontSize: AppResponsive.font(context, 11),
+            fontSize: AppResponsive.font(context, compact ? 10 : 11),
             fontWeight: FontWeight.w400,
             height: 1.2,
           ),
@@ -384,6 +348,7 @@ class _EntryActions extends StatelessWidget {
 
 class _ActionButton extends StatelessWidget {
   const _ActionButton({
+    this.compact = false,
     required this.label,
     required this.labelColor,
     required this.backgroundColor,
@@ -398,6 +363,7 @@ class _ActionButton extends StatelessWidget {
   final Color circleColor;
   final Color? borderColor;
   final VoidCallback? onPressed;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -407,7 +373,7 @@ class _ActionButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(100),
         child: Ink(
-          height: AppResponsive.value(context, 56),
+          height: AppResponsive.value(context, compact ? 52 : 56),
           padding: EdgeInsets.only(
             left: AppResponsive.value(context, 21),
             right: AppResponsive.value(context, 8),
@@ -432,8 +398,8 @@ class _ActionButton extends StatelessWidget {
                 ),
               ),
               Container(
-                width: AppResponsive.value(context, 40),
-                height: AppResponsive.value(context, 40),
+                width: AppResponsive.value(context, compact ? 38 : 40),
+                height: AppResponsive.value(context, compact ? 38 : 40),
                 decoration: BoxDecoration(
                   color: circleColor,
                   shape: BoxShape.circle,
@@ -446,29 +412,6 @@ class _ActionButton extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeIndicatorArea extends StatelessWidget {
-  const _HomeIndicatorArea();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: AppResponsive.value(context, 30),
-      child: Center(
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: AppColors.darkGreen,
-            borderRadius: BorderRadius.all(Radius.circular(100)),
-          ),
-          child: SizedBox(
-            width: AppResponsive.value(context, 128),
-            height: AppResponsive.value(context, 5),
           ),
         ),
       ),

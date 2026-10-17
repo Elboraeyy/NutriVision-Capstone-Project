@@ -11,6 +11,9 @@ export 'app/app.dart' show NutriVisionApp;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = appBlocObserver;
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: const [SystemUiOverlay.top, SystemUiOverlay.bottom],
+  );
   runApp(const NutriVisionApp());
 }

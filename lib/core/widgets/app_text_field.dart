@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_responsive.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_responsive.dart';
 
-class AuthField extends StatelessWidget {
-  const AuthField({
+/// Shared styled text field used by forms throughout the app.
+class AppTextField extends StatelessWidget {
+  const AppTextField({
     super.key,
     required this.label,
     this.hintText,
@@ -34,13 +35,13 @@ class AuthField extends StatelessWidget {
           label,
           style: TextStyle(
             color: AppColors.darkGreen,
-            fontSize: AppResponsive.font(context, 12),
+            fontSize: AppResponsive.font(context, 13.5),
             fontWeight: FontWeight.w700,
           ),
         ),
-        SizedBox(height: AppResponsive.value(context, 7)),
+        SizedBox(height: AppResponsive.value(context, 4)),
         SizedBox(
-          height: AppResponsive.value(context, 56),
+          height: AppResponsive.value(context, 64),
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
@@ -48,14 +49,14 @@ class AuthField extends StatelessWidget {
             cursorColor: AppColors.green,
             style: TextStyle(
               color: AppColors.darkGreen,
-              fontSize: AppResponsive.font(context, 14),
+              fontSize: AppResponsive.font(context, 15.5),
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: TextStyle(
                 color: AppColors.mutedGreen,
-                fontSize: AppResponsive.font(context, 14),
+                fontSize: AppResponsive.font(context, 15.5),
               ),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: AppResponsive.value(context, 17),

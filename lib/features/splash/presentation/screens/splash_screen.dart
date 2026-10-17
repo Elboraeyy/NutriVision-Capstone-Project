@@ -3,11 +3,12 @@ import 'dart:async';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
-import '../../../../core/widgets/design_status_bar.dart';
+import '../../../../core/theme/app_system_ui.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -68,38 +69,34 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final scale = AppResponsive.scale(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.green,
-      body: ColoredBox(
-        color: AppColors.green,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            const Positioned(
-              top: 0,
-              left: 8,
-              right: 8,
-              height: 40,
-              child: DesignStatusBar(assetPath: AppAssets.deviceStatus),
-            ),
-            Center(
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: ScaleTransition(
-                    scale: _scaleAnimation,
-                    child: SvgPicture.asset(
-                      AppAssets.logo,
-                      width: 213 * scale,
-                      height: 168 * scale,
-                      fit: BoxFit.contain,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppSystemUi.greenScreen,
+      child: Scaffold(
+        backgroundColor: AppColors.green,
+        body: ColoredBox(
+          color: AppColors.green,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Center(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: SvgPicture.asset(
+                        AppAssets.logo,
+                        width: 213 * scale,
+                        height: 168 * scale,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
