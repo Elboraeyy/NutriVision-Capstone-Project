@@ -8,5 +8,6 @@ In particular, preserve the project's Clean Architecture, use real Bloc for
 feature workflows, Cubit only for small local state, register repositories with
 `MultiRepositoryProvider`, keep screens thin, and run `dart format .`,
 `flutter analyze`, and `flutter test` before finishing. When adding a feature,
-proactively add contextual `AppToast` feedback for meaningful success, failure,
-validation, and unavailable-action paths.
+use contextual `AppToast` feedback only for meaningful success, failure,
+validation blockers, or unavailable actions; do not add redundant toasts for
+normal navigation or visible state changes.
