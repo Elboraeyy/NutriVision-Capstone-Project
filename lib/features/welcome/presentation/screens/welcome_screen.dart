@@ -8,6 +8,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/theme/app_system_ui.dart';
 import '../../../../core/widgets/app_green_header.dart';
+import '../../../../core/widgets/app_overlay_scaffold.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onSignIn, this.onSignUp});
@@ -71,60 +72,57 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: AppSystemUi.greenHeader,
-      child: Scaffold(
-        backgroundColor: AppColors.cream,
-        body: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              FadeTransition(
-                opacity: _headerFade,
-                child: SlideTransition(
-                  position: _headerSlide,
-                  child: const AppGreenHeader(
-                    title: 'NutriVision',
-                    subtitle: 'A little clarity. Every day.',
-                    height: 175,
-                    cornerRadius: 70,
-                  ),
-                ),
+      child: AppOverlayScaffold(
+        header: FadeTransition(
+          opacity: _headerFade,
+          child: SlideTransition(
+            position: _headerSlide,
+            child: const AppGreenHeader(
+              title: 'NutriVision',
+              subtitle: 'A little clarity. Every day.',
+              height: 175,
+              cornerRadius: 70,
+            ),
+          ),
+        ),
+        body: FadeTransition(
+          opacity: _contentFade,
+          child: SlideTransition(
+            position: _contentSlide,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppResponsive.value(context, 20),
+                0,
+                AppResponsive.value(context, 20),
+                0,
               ),
-              Expanded(
-                child: FadeTransition(
-                  opacity: _contentFade,
-                  child: SlideTransition(
-                    position: _contentSlide,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        AppResponsive.value(context, 20),
-                        AppResponsive.value(context, 18),
-                        AppResponsive.value(context, 20),
-                        0,
-                      ),
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                _Introduction(compact: isCompact),
-                                const Spacer(),
-                                _EntryActions(
-                                  compact: isCompact,
-                                  onSignIn: widget.onSignIn,
-                                  onSignUp: widget.onSignUp,
-                                ),
-                              ],
-                            ),
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      top:
+                          AppOverlayScaffold.contentTop(context, 175) +
+                          AppResponsive.value(context, 18),
+                    ),
+                    sliver: SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _Introduction(compact: isCompact),
+                          const Spacer(),
+                          _EntryActions(
+                            compact: isCompact,
+                            onSignIn: widget.onSignIn,
+                            onSignUp: widget.onSignUp,
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
