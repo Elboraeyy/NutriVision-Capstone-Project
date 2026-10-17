@@ -45,6 +45,13 @@ stay focused on composition.
 For the complete coding-agent rules and project conventions, read
 [`AGENTS.md`](AGENTS.md).
 
+## iOS IPA builds
+
+The GitHub Actions workflow in [`.github/workflows/ios-ipa.yml`](.github/workflows/ios-ipa.yml)
+builds and uploads an unsigned IPA artifact on pushes to `main` or manual
+workflow runs. See [`docs/ios-ipa.md`](docs/ios-ipa.md) for download and Apple
+signing details.
+
 ## Team
 
 - Mohamed Samy
