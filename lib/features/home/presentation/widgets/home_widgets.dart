@@ -888,17 +888,17 @@ class _HomeNavItem extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(100),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 320),
               curve: Curves.easeOutCubic,
               padding: EdgeInsets.symmetric(
                 horizontal: AppResponsive.value(context, selected ? 7 : 2),
-                vertical: AppResponsive.value(context, 2),
+                vertical: AppResponsive.value(context, selected ? 5 : 2),
               ),
               decoration: BoxDecoration(
                 color: selected ? AppColors.green : Colors.transparent,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(100),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
