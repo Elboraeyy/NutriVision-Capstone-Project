@@ -100,7 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   size: 17,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(
+                                height: AppResponsive.value(context, 13),
+                              ),
                               AuthField(
                                 label: 'Email',
                                 controller: _emailController,
@@ -111,7 +113,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   size: 17,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(
+                                height: AppResponsive.value(context, 13),
+                              ),
                               AuthField(
                                 label: 'Password',
                                 controller: _passwordController,
@@ -120,7 +124,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     .read<SignUpCubit>()
                                     .togglePasswordVisibility,
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(
+                                height: AppResponsive.value(context, 13),
+                              ),
                               AuthField(
                                 label: 'Confirm password',
                                 controller: _confirmPasswordController,
@@ -129,15 +135,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     .read<SignUpCubit>()
                                     .toggleConfirmPasswordVisibility,
                               ),
-                              const SizedBox(height: 8),
-                              const Text(
+                              SizedBox(
+                                height: AppResponsive.value(context, 10),
+                              ),
+                              Text(
                                 'Use at least 8 characters with a letter and a number.',
                                 style: TextStyle(
                                   color: AppColors.mutedGreen,
-                                  fontSize: 9,
+                                  fontSize: AppResponsive.font(context, 10),
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(
+                                height: AppResponsive.value(context, 10),
+                              ),
                               Row(
                                 children: [
                                   const Icon(
@@ -153,14 +163,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             _passwordController.text.isNotEmpty
                                         ? "Passwords match. You're ready to go."
                                         : 'Passwords must match.',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.mutedGreen,
-                                      fontSize: 9,
+                                      fontSize: AppResponsive.font(context, 10),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(
+                                height: AppResponsive.value(context, 10),
+                              ),
                               GestureDetector(
                                 onTap: context.read<SignUpCubit>().toggleTerms,
                                 child: Row(
@@ -175,32 +187,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       size: 19,
                                     ),
                                     const SizedBox(width: 5),
-                                    const Expanded(
+                                    Expanded(
                                       child: Text(
                                         'I agree to the Terms of Service and Privacy Policy.',
                                         style: TextStyle(
                                           color: AppColors.mutedGreen,
-                                          fontSize: 9,
+                                          fontSize: AppResponsive.font(
+                                            context,
+                                            10,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              const Text(
+                              SizedBox(
+                                height: AppResponsive.value(context, 10),
+                              ),
+                              Text(
                                 'Personal details come later, and they’re optional.',
                                 style: TextStyle(
                                   color: AppColors.mutedGreen,
-                                  fontSize: 9,
+                                  fontSize: AppResponsive.font(context, 10),
                                 ),
                               ),
-                              const Spacer(),
+                              SizedBox(
+                                height: AppResponsive.value(context, 30),
+                              ),
                               AuthActionButton(
                                 label: 'Create account',
                                 onPressed: () => _createAccount(context, state),
                               ),
-                              const SizedBox(height: 11),
+                              SizedBox(
+                                height: AppResponsive.value(context, 12),
+                              ),
                               GestureDetector(
                                 onTap: () => context.go('/sign-in'),
                                 child: const Text(
@@ -208,12 +229,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: AppColors.darkGreen,
-                                    fontSize: 10,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 21),
+                              const Spacer(),
+                              SizedBox(
+                                height: AppResponsive.value(context, 18),
+                              ),
                               const _HomeIndicator(),
                               const SizedBox(height: 10),
                             ],

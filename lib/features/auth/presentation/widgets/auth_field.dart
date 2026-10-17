@@ -34,13 +34,13 @@ class AuthField extends StatelessWidget {
           label,
           style: TextStyle(
             color: AppColors.darkGreen,
-            fontSize: AppResponsive.font(context, 11),
+            fontSize: AppResponsive.font(context, 12),
             fontWeight: FontWeight.w700,
           ),
         ),
-        SizedBox(height: AppResponsive.value(context, 6)),
+        SizedBox(height: AppResponsive.value(context, 7)),
         SizedBox(
-          height: AppResponsive.value(context, 50),
+          height: AppResponsive.value(context, 56),
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
@@ -48,17 +48,17 @@ class AuthField extends StatelessWidget {
             cursorColor: AppColors.green,
             style: TextStyle(
               color: AppColors.darkGreen,
-              fontSize: AppResponsive.font(context, 13),
+              fontSize: AppResponsive.font(context, 14),
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: TextStyle(
                 color: AppColors.mutedGreen,
-                fontSize: AppResponsive.font(context, 13),
+                fontSize: AppResponsive.font(context, 14),
               ),
               contentPadding: EdgeInsets.symmetric(
-                horizontal: AppResponsive.value(context, 15),
+                horizontal: AppResponsive.value(context, 17),
               ),
               suffixIcon:
                   suffixIcon ??
@@ -71,20 +71,20 @@ class AuthField extends StatelessWidget {
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
                             color: AppColors.green,
-                            size: 19 * scale,
+                            size: 21 * scale,
                           ),
                         )),
               filled: true,
               fillColor: const Color(0xFFEFF2E5),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
-                  AppResponsive.value(context, 16),
+                  AppResponsive.value(context, 18),
                 ),
                 borderSide: const BorderSide(color: AppColors.borderGreen),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
-                  AppResponsive.value(context, 16),
+                  AppResponsive.value(context, 18),
                 ),
                 borderSide: const BorderSide(color: AppColors.green),
               ),

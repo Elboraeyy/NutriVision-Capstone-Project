@@ -105,13 +105,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: const Text(
                           'Forgot password?',
                           style: TextStyle(
-                            fontSize: 10,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    SizedBox(height: AppResponsive.value(context, 128)),
                     AuthActionButton(
                       label: 'Sign In',
                       onPressed: () {
@@ -129,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 11),
+                    SizedBox(height: AppResponsive.value(context, 12)),
                     GestureDetector(
                       onTap: () => context.push('/sign-up'),
                       child: const Text(
@@ -137,12 +137,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.darkGreen,
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                    SizedBox(height: AppResponsive.value(context, 21)),
+                    const Spacer(),
+                    SizedBox(height: AppResponsive.value(context, 18)),
                     const _HomeIndicator(),
                   ],
                 ),

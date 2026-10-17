@@ -59,7 +59,7 @@ class AuthHeader extends StatelessWidget {
                     'Back',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: AppResponsive.font(context, 11),
+                      fontSize: AppResponsive.font(context, 12),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -72,7 +72,7 @@ class AuthHeader extends StatelessWidget {
             'YOUR ACCOUNT',
             style: TextStyle(
               color: AppColors.lime,
-              fontSize: AppResponsive.font(context, 10),
+              fontSize: AppResponsive.font(context, 11),
               fontWeight: FontWeight.w700,
               letterSpacing: .2,
             ),
@@ -84,7 +84,7 @@ class AuthHeader extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white,
-              fontSize: AppResponsive.font(context, 27),
+              fontSize: AppResponsive.font(context, 29),
               fontWeight: FontWeight.w800,
               height: 1,
             ),
@@ -96,7 +96,7 @@ class AuthHeader extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 11),
+              fontSize: AppResponsive.font(context, 12),
               height: 1.2,
             ),
           ),

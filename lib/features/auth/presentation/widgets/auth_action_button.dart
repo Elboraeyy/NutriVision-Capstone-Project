@@ -14,7 +14,7 @@ class AuthActionButton extends StatelessWidget {
     final scale = AppResponsive.scale(context);
 
     return SizedBox(
-      height: AppResponsive.value(context, 55),
+      height: AppResponsive.value(context, 58),
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
@@ -32,7 +32,7 @@ class AuthActionButton extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: AppResponsive.font(context, 15),
+                fontSize: AppResponsive.font(context, 16),
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -42,8 +42,8 @@ class AuthActionButton extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: SizedBox(
-                width: AppResponsive.value(context, 38),
-                height: AppResponsive.value(context, 38),
+                width: AppResponsive.value(context, 42),
+                height: AppResponsive.value(context, 42),
                 child: Icon(
                   Icons.arrow_forward,
                   color: AppColors.green,
