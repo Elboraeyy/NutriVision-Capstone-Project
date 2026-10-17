@@ -29,15 +29,6 @@ class _HomeBody extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: headerHeight - overlap,
-          left: AppResponsive.value(context, 20),
-          right: AppResponsive.value(context, 20),
-          child: SizedBox(
-            height: nutritionHeight,
-            child: _NutritionCard(summary: dashboard.nutrition),
-          ),
-        ),
-        Positioned(
           left: AppResponsive.value(context, 14),
           right: AppResponsive.value(context, 14),
           bottom: AppResponsive.value(context, 8),

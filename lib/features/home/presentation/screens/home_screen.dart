@@ -59,6 +59,17 @@ class HomeScreen extends StatelessWidget {
                   }
                 },
               ),
+              foreground: Positioned(
+                top:
+                    AppOverlayScaffold.contentTop(context, 165) -
+                    AppResponsive.value(context, 40),
+                left: AppResponsive.value(context, 20),
+                right: AppResponsive.value(context, 20),
+                child: SizedBox(
+                  height: AppResponsive.value(context, 212),
+                  child: _NutritionCard(summary: dashboard.nutrition),
+                ),
+              ),
             ),
           ),
         );
