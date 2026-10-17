@@ -6,11 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/design_status_bar.dart';
 
 class AuthHeader extends StatelessWidget {
-  const AuthHeader({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const AuthHeader({super.key, required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -33,12 +29,16 @@ class AuthHeader extends StatelessWidget {
         children: [
           const SizedBox(
             height: 35,
-            child: DesignStatusBar(
-              assetPath: AppAssets.welcomeDeviceStatus,
-            ),
+            child: DesignStatusBar(assetPath: AppAssets.welcomeDeviceStatus),
           ),
           GestureDetector(
-            onTap: context.pop,
+            onTap: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/welcome');
+              }
+            },
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 7),
               child: Row(

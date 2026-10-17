@@ -20,8 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController(text: 'Maya');
   final _emailController = TextEditingController(text: 'maya@example.com');
   final _passwordController = TextEditingController(text: 'password123');
-  final _confirmPasswordController =
-      TextEditingController(text: 'password123');
+  final _confirmPasswordController = TextEditingController(text: 'password123');
 
   @override
   void dispose() {
@@ -41,17 +40,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         : null;
     final confirmError =
         _passwordController.text == _confirmPasswordController.text
-            ? null
-            : 'Passwords do not match.';
+        ? null
+        : 'Passwords do not match.';
 
     final error = !state.isTermsAccepted
         ? 'Please accept the Terms of Service and Privacy Policy.'
         : emailError ?? passwordError ?? confirmError;
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
@@ -79,136 +78,142 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
                 child: BlocBuilder<SignUpCubit, SignUpState>(
                   builder: (context, state) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AuthField(
-                            label: 'Name',
-                            controller: _nameController,
-                            suffixIcon: const Icon(
-                              Icons.person_outline,
-                              color: AppColors.green,
-                              size: 17,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          AuthField(
-                            label: 'Email',
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            suffixIcon: const Icon(
-                              Icons.check,
-                              color: AppColors.green,
-                              size: 17,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          AuthField(
-                            label: 'Password',
-                            controller: _passwordController,
-                            obscureText: !state.isPasswordVisible,
-                            onToggleObscure: context
-                                .read<SignUpCubit>()
-                                .togglePasswordVisibility,
-                          ),
-                          const SizedBox(height: 10),
-                          AuthField(
-                            label: 'Confirm password',
-                            controller: _confirmPasswordController,
-                            obscureText: !state.isConfirmPasswordVisible,
-                            onToggleObscure: context
-                                .read<SignUpCubit>()
-                                .toggleConfirmPasswordVisibility,
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Use at least 8 characters with a letter and a number.',
-                            style: TextStyle(
-                              color: AppColors.mutedGreen,
-                              fontSize: 9,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
+                    return CustomScrollView(
+                      slivers: [
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Icon(
-                                Icons.check_circle_outline,
-                                color: AppColors.green,
-                                size: 14,
+                              AuthField(
+                                label: 'Name',
+                                controller: _nameController,
+                                suffixIcon: const Icon(
+                                  Icons.person_outline,
+                                  color: AppColors.green,
+                                  size: 17,
+                                ),
                               ),
-                              const SizedBox(width: 5),
-                              Text(
-                                _passwordController.text ==
-                                            _confirmPasswordController.text &&
-                                        _passwordController.text.isNotEmpty
-                                    ? "Passwords match. You're ready to go."
-                                    : 'Passwords must match.',
-                                style: const TextStyle(
+                              const SizedBox(height: 10),
+                              AuthField(
+                                label: 'Email',
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                suffixIcon: const Icon(
+                                  Icons.check,
+                                  color: AppColors.green,
+                                  size: 17,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              AuthField(
+                                label: 'Password',
+                                controller: _passwordController,
+                                obscureText: !state.isPasswordVisible,
+                                onToggleObscure: context
+                                    .read<SignUpCubit>()
+                                    .togglePasswordVisibility,
+                              ),
+                              const SizedBox(height: 10),
+                              AuthField(
+                                label: 'Confirm password',
+                                controller: _confirmPasswordController,
+                                obscureText: !state.isConfirmPasswordVisible,
+                                onToggleObscure: context
+                                    .read<SignUpCubit>()
+                                    .toggleConfirmPasswordVisibility,
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Use at least 8 characters with a letter and a number.',
+                                style: TextStyle(
                                   color: AppColors.mutedGreen,
                                   fontSize: 9,
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          GestureDetector(
-                            onTap: context.read<SignUpCubit>().toggleTerms,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  state.isTermsAccepted
-                                      ? Icons.check_box
-                                      : Icons.check_box_outline_blank,
-                                  color: state.isTermsAccepted
-                                      ? AppColors.green
-                                      : AppColors.borderGreen,
-                                  size: 19,
-                                ),
-                                const SizedBox(width: 5),
-                                const Expanded(
-                                  child: Text(
-                                    'I agree to the Terms of Service and Privacy Policy.',
-                                    style: TextStyle(
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle_outline,
+                                    color: AppColors.green,
+                                    size: 14,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    _passwordController.text ==
+                                                _confirmPasswordController
+                                                    .text &&
+                                            _passwordController.text.isNotEmpty
+                                        ? "Passwords match. You're ready to go."
+                                        : 'Passwords must match.',
+                                    style: const TextStyle(
                                       color: AppColors.mutedGreen,
                                       fontSize: 9,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Personal details come later, and they’re optional.',
-                            style: TextStyle(
-                              color: AppColors.mutedGreen,
-                              fontSize: 9,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          AuthActionButton(
-                            label: 'Create account',
-                            onPressed: () => _createAccount(context, state),
-                          ),
-                          const SizedBox(height: 11),
-                          GestureDetector(
-                            onTap: () => context.go('/sign-in'),
-                            child: const Text(
-                              'Already have an account? Sign In',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.darkGreen,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
+                                ],
                               ),
-                            ),
+                              const SizedBox(height: 8),
+                              GestureDetector(
+                                onTap: context.read<SignUpCubit>().toggleTerms,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      state.isTermsAccepted
+                                          ? Icons.check_box
+                                          : Icons.check_box_outline_blank,
+                                      color: state.isTermsAccepted
+                                          ? AppColors.green
+                                          : AppColors.borderGreen,
+                                      size: 19,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Expanded(
+                                      child: Text(
+                                        'I agree to the Terms of Service and Privacy Policy.',
+                                        style: TextStyle(
+                                          color: AppColors.mutedGreen,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Personal details come later, and they’re optional.',
+                                style: TextStyle(
+                                  color: AppColors.mutedGreen,
+                                  fontSize: 9,
+                                ),
+                              ),
+                              const Spacer(),
+                              AuthActionButton(
+                                label: 'Create account',
+                                onPressed: () => _createAccount(context, state),
+                              ),
+                              const SizedBox(height: 11),
+                              GestureDetector(
+                                onTap: () => context.go('/sign-in'),
+                                child: const Text(
+                                  'Already have an account? Sign In',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.darkGreen,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 21),
+                              const _HomeIndicator(),
+                              const SizedBox(height: 10),
+                            ],
                           ),
-                          const SizedBox(height: 21),
-                          const _HomeIndicator(),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   },
                 ),

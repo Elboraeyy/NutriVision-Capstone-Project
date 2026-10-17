@@ -33,9 +33,9 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   void toggleConfirmPasswordVisibility() {
-    emit(state.copyWith(
-      isConfirmPasswordVisible: !state.isConfirmPasswordVisible,
-    ));
+    emit(
+      state.copyWith(isConfirmPasswordVisible: !state.isConfirmPasswordVisible),
+    );
   }
 
   void toggleTerms() {

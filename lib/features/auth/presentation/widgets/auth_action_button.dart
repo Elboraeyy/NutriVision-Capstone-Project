@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class AuthActionButton extends StatelessWidget {
-  const AuthActionButton({
-    super.key,
-    required this.label,
-    this.onPressed,
-  });
+  const AuthActionButton({super.key, required this.label, this.onPressed});
 
   final String label;
   final VoidCallback? onPressed;
@@ -29,10 +25,7 @@ class AuthActionButton extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-              ),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
             ),
             const DecoratedBox(
               decoration: BoxDecoration(

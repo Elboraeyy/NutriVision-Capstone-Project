@@ -55,7 +55,8 @@ class AuthField extends StatelessWidget {
                 fontSize: 11,
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-              suffixIcon: suffixIcon ??
+              suffixIcon:
+                  suffixIcon ??
                   (onToggleObscure == null
                       ? null
                       : IconButton(

@@ -125,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(height: 11),
                     GestureDetector(
-                      onTap: () => context.go('/welcome'),
+                      onTap: () => context.push('/sign-up'),
                       child: const Text(
                         'New to NutriVision? Sign Up',
                         textAlign: TextAlign.center,

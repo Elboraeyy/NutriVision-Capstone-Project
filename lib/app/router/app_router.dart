@@ -23,8 +23,8 @@ abstract final class AppRouter {
         path: '/welcome',
         name: 'welcome',
         builder: (context, state) => WelcomeScreen(
-          onSignIn: () => context.goNamed('sign-in'),
-          onSignUp: () => context.goNamed('sign-up'),
+          onSignIn: () => context.pushNamed('sign-in'),
+          onSignUp: () => context.pushNamed('sign-up'),
         ),
       ),
       GoRoute(
