@@ -25,7 +25,7 @@ class AllergiesScreen extends StatelessWidget {
               message: 'Your preferences were saved successfully.',
               type: AppToastType.success,
             );
-            context.go('/home');
+            context.go('/splash?destination=home');
           } else if (state.status == OnboardingStatus.failure) {
             AppToast.show(
               context,

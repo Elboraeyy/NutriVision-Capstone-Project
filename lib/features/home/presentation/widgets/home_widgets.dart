@@ -43,9 +43,10 @@ class _HomeBody extends StatelessWidget {
 }
 
 class _HomeHeader extends StatelessWidget {
-  const _HomeHeader({required this.dashboard});
+  const _HomeHeader({required this.dashboard, required this.userName});
 
   final HomeDashboard dashboard;
+  final String? userName;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +110,9 @@ class _HomeHeader extends StatelessWidget {
               children: [
                 const TextSpan(text: 'Good afternoon, '),
                 TextSpan(
-                  text: dashboard.greetingName,
+                  text: userName?.trim().isNotEmpty == true
+                      ? userName!.trim()
+                      : 'Mohamed',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
               ],
@@ -166,10 +169,7 @@ class _HomeContent extends StatelessWidget {
               SizedBox(height: AppResponsive.value(context, 12)),
               _WaterCard(summary: dashboard.water),
               SizedBox(height: AppResponsive.value(context, 16)),
-              const _SectionHeading(
-                title: 'Recently logged',
-                action: 'Diary ↗',
-              ),
+              const _SectionHeading(title: 'Recently logged', action: 'Diary'),
               SizedBox(height: AppResponsive.value(context, 8)),
               _RecentMealCard(meal: dashboard.recentMeal),
               SizedBox(height: AppResponsive.value(context, 14)),
@@ -641,13 +641,24 @@ class _SectionHeading extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        Text(
-          action,
-          style: TextStyle(
-            color: AppColors.darkGreen,
-            fontSize: AppResponsive.font(context, 10),
-            fontWeight: FontWeight.w700,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              action,
+              style: TextStyle(
+                color: AppColors.darkGreen,
+                fontSize: AppResponsive.font(context, 10),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(width: AppResponsive.value(context, 2)),
+            Icon(
+              Icons.open_in_new_rounded,
+              color: AppColors.darkGreen,
+              size: AppResponsive.value(context, 10),
+            ),
+          ],
         ),
       ],
     );

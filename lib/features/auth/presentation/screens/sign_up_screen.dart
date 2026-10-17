@@ -15,6 +15,7 @@ import '../bloc/auth_session_bloc.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../../../onboarding/presentation/bloc/onboarding_bloc.dart';
 import '../utils/auth_validation.dart';
+import '../widgets/auth_underlined_text.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -28,6 +29,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(_refreshFormFeedback);
+    _confirmPasswordController.addListener(_refreshFormFeedback);
+    _passwordFocusNode.addListener(_refreshFormFeedback);
+    _confirmPasswordFocusNode.addListener(_refreshFormFeedback);
+  }
+
+  void _refreshFormFeedback() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
@@ -35,8 +51,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
+
+  bool get _passwordHasText => _passwordController.text.isNotEmpty;
+
+  bool get _confirmPasswordHasText =>
+      _confirmPasswordController.text.isNotEmpty;
+
+  bool get _passwordsMatch =>
+      _passwordHasText &&
+      _confirmPasswordHasText &&
+      _passwordController.text == _confirmPasswordController.text;
 
   Future<void> _createAccount(BuildContext context) async {
     final formState = context.read<SignUpCubit>().state;
@@ -147,51 +175,122 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 label: 'Password',
                                 hintText: '••••••••••••',
                                 controller: _passwordController,
+                                focusNode: _passwordFocusNode,
                                 obscureText: !state.isPasswordVisible,
                                 onToggleObscure: context
                                     .read<SignUpCubit>()
                                     .togglePasswordVisibility,
+                              ),
+                              AnimatedSize(
+                                duration: const Duration(milliseconds: 180),
+                                curve: Curves.easeOut,
+                                child:
+                                    _passwordFocusNode.hasFocus ||
+                                        _passwordHasText
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                          top: AppResponsive.value(context, 6),
+                                          left: AppResponsive.value(context, 4),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              AuthValidation.isValidPassword(
+                                                    _passwordController.text,
+                                                  )
+                                                  ? Icons.check_circle_outline
+                                                  : Icons.info_outline,
+                                              color: AppColors.mutedGreen,
+                                              size: AppResponsive.value(
+                                                context,
+                                                15,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: AppResponsive.value(
+                                                context,
+                                                5,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                AuthValidation.isValidPassword(
+                                                      _passwordController.text,
+                                                    )
+                                                    ? 'Password meets the requirements.'
+                                                    : 'Use at least 8 characters with a letter and a number.',
+                                                style: TextStyle(
+                                                  color: AppColors.mutedGreen,
+                                                  fontSize: AppResponsive.font(
+                                                    context,
+                                                    12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
                               ),
                               SizedBox(height: AppResponsive.value(context, 2)),
                               AppTextField(
                                 label: 'Confirm password',
                                 hintText: '••••••••••••',
                                 controller: _confirmPasswordController,
+                                focusNode: _confirmPasswordFocusNode,
                                 obscureText: !state.isConfirmPasswordVisible,
                                 onToggleObscure: context
                                     .read<SignUpCubit>()
                                     .toggleConfirmPasswordVisibility,
                               ),
-                              SizedBox(height: AppResponsive.value(context, 5)),
-                              Text(
-                                'Use at least 8 characters with a letter and a number.',
-                                style: TextStyle(
-                                  color: AppColors.mutedGreen,
-                                  fontSize: AppResponsive.font(context, 12),
-                                ),
-                              ),
-                              SizedBox(height: AppResponsive.value(context, 5)),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.check_circle_outline,
-                                    color: AppColors.green,
-                                    size: 14,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    _passwordController.text ==
-                                                _confirmPasswordController
-                                                    .text &&
-                                            _passwordController.text.isNotEmpty
-                                        ? "Passwords match. You're ready to go."
-                                        : 'Passwords must match.',
-                                    style: TextStyle(
-                                      color: AppColors.mutedGreen,
-                                      fontSize: AppResponsive.font(context, 12),
-                                    ),
-                                  ),
-                                ],
+                              AnimatedSize(
+                                duration: const Duration(milliseconds: 180),
+                                curve: Curves.easeOut,
+                                child: _confirmPasswordHasText
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                          top: AppResponsive.value(context, 6),
+                                          left: AppResponsive.value(context, 4),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              _passwordsMatch
+                                                  ? Icons.check_circle_outline
+                                                  : Icons.info_outline,
+                                              color: _passwordsMatch
+                                                  ? AppColors.green
+                                                  : AppColors.mutedGreen,
+                                              size: AppResponsive.value(
+                                                context,
+                                                15,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: AppResponsive.value(
+                                                context,
+                                                5,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _passwordsMatch
+                                                    ? "Passwords match. You're ready to go."
+                                                    : 'Passwords must match.',
+                                                style: TextStyle(
+                                                  color: AppColors.mutedGreen,
+                                                  fontSize: AppResponsive.font(
+                                                    context,
+                                                    12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
                               ),
                               SizedBox(height: AppResponsive.value(context, 5)),
                               GestureDetector(
@@ -223,15 +322,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ],
                                 ),
                               ),
+                              const Spacer(),
                               SizedBox(height: AppResponsive.value(context, 7)),
-                              Text(
-                                'Personal details come later, and they’re optional.',
-                                style: TextStyle(
-                                  color: AppColors.mutedGreen,
-                                  fontSize: AppResponsive.font(context, 12),
+                              Center(
+                                child: Text(
+                                  'Personal details come later, and they’re optional.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.mutedGreen,
+                                    fontSize: AppResponsive.font(context, 12),
+                                  ),
                                 ),
                               ),
-                              const Spacer(),
+                              SizedBox(height: AppResponsive.value(context, 7)),
                               AppActionButton(
                                 label: 'Create account',
                                 onPressed: () => _createAccount(context),
@@ -239,15 +342,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               SizedBox(
                                 height: AppResponsive.value(context, 12),
                               ),
-                              GestureDetector(
-                                onTap: () => context.go('/sign-in'),
-                                child: const Text(
-                                  'Already have an account? Sign In',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: AppColors.darkGreen,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
+                              Center(
+                                child: GestureDetector(
+                                  onTap: () => context.go('/sign-in'),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        'Already have an account?',
+                                        style: TextStyle(
+                                          color: AppColors.darkGreen,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 3),
+                                      const AuthUnderlinedText(text: 'Sign In'),
+                                    ],
                                   ),
                                 ),
                               ),

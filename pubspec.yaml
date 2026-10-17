@@ -37,6 +37,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_svg: ^2.3.0
   go_router: ^16.2.4
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -61,19 +62,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/device_status.svg
     - assets/images/nutrivision_logo.svg
-    - assets/images/welcome/device_status.svg
     - assets/images/welcome/arrow_right.svg
     - assets/images/welcome/scan_line.svg
     - assets/images/welcome/utensils.svg
     - assets/images/welcome/sprout.svg
-    - assets/images/welcome/food_illustration.svg
-    - assets/images/welcome/scan_line.png
-    - assets/images/welcome/utensils.png
-    - assets/images/welcome/sprout.png
-    - assets/images/welcome/arrow_right.png
-    - assets/images/welcome/food_illustration.png
+    - assets/images/welcome/food_illustration_hd.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

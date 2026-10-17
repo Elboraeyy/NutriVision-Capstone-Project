@@ -60,16 +60,22 @@ class SignOutRequested extends AuthSessionEvent {
   const SignOutRequested();
 }
 
+class AuthSessionRestoreRequested extends AuthSessionEvent {
+  const AuthSessionRestoreRequested();
+}
+
 class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
   AuthSessionBloc({
     required AuthRepository repository,
     required SignIn signIn,
     required SignUp signUp,
     required SignOut signOut,
-  }) : _signIn = signIn,
+  }) : _repository = repository,
+       _signIn = signIn,
        _signUp = signUp,
        _signOut = signOut,
        super(AuthSessionState(user: repository.currentUser)) {
+    on<AuthSessionRestoreRequested>(_onAuthSessionRestoreRequested);
     on<SignInRequested>(_onSignInRequested);
     on<SignUpRequested>(_onSignUpRequested);
     on<SignOutRequested>(_onSignOutRequested);
@@ -78,6 +84,33 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
   final SignIn _signIn;
   final SignUp _signUp;
   final SignOut _signOut;
+  final AuthRepository _repository;
+
+  Future<void> _onAuthSessionRestoreRequested(
+    AuthSessionRestoreRequested event,
+    Emitter<AuthSessionState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthSessionStatus.loading, message: null));
+    try {
+      await _repository.initialize();
+      final user = _repository.currentUser;
+      emit(
+        AuthSessionState(
+          status: user == null
+              ? AuthSessionStatus.signedOut
+              : AuthSessionStatus.signedIn,
+          user: user,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          status: AuthSessionStatus.failure,
+          message: error.toString(),
+        ),
+      );
+    }
+  }
 
   Future<void> _onSignInRequested(
     SignInRequested event,

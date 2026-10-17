@@ -6,7 +6,6 @@ class InMemoryHomeRepository implements HomeRepository {
   @override
   Future<HomeDashboard> getDashboard() async {
     return const HomeDashboard(
-      greetingName: 'Maya.',
       dayLabel: 'Wednesday, Oct 14',
       nutrition: NutritionSummary(
         consumedCalories: 1240,

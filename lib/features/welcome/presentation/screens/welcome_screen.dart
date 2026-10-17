@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -149,10 +150,9 @@ class _Introduction extends StatelessWidget {
         SizedBox(
           height: AppResponsive.value(context, compact ? 195 : 220),
           child: Center(
-            child: Image.asset(
+            child: SvgPicture.asset(
               AppAssets.foodIllustration,
               width: illustrationWidth,
-              height: illustrationWidth * .52,
               fit: BoxFit.contain,
             ),
           ),
@@ -276,7 +276,7 @@ class _Benefit extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset(
+          SvgPicture.asset(
             assetPath,
             width: AppResponsive.value(context, 22),
             height: AppResponsive.value(context, 22),
@@ -403,10 +403,10 @@ class _ActionButton extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: Icon(
-                  Icons.arrow_forward,
-                  color: AppColors.green,
-                  size: AppResponsive.value(context, 21),
+                child: SvgPicture.asset(
+                  AppAssets.arrowRight,
+                  width: AppResponsive.value(context, 21),
+                  height: AppResponsive.value(context, 21),
                 ),
               ),
             ],

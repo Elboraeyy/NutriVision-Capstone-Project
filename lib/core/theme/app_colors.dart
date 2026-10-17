@@ -11,4 +11,5 @@ abstract final class AppColors {
   static const peach = Color(0xFFF2D7C8);
   static const mutedGreen = Color(0xFF657363);
   static const borderGreen = Color(0xFFB9C8A6);
+  static const errorRed = Color(0xFFC64F45);
 }

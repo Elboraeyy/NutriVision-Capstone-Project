@@ -10,6 +10,7 @@ class AppTextField extends StatelessWidget {
     required this.label,
     this.hintText,
     this.controller,
+    this.focusNode,
     this.keyboardType,
     this.obscureText = false,
     this.onToggleObscure,
@@ -19,6 +20,7 @@ class AppTextField extends StatelessWidget {
   final String label;
   final String? hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final bool obscureText;
   final VoidCallback? onToggleObscure;
@@ -44,6 +46,7 @@ class AppTextField extends StatelessWidget {
           height: AppResponsive.value(context, 64),
           child: TextFormField(
             controller: controller,
+            focusNode: focusNode,
             keyboardType: keyboardType,
             obscureText: obscureText,
             cursorColor: AppColors.green,

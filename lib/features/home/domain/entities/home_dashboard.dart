@@ -1,6 +1,5 @@
 class HomeDashboard {
   const HomeDashboard({
-    required this.greetingName,
     required this.dayLabel,
     required this.nutrition,
     required this.water,
@@ -8,7 +7,6 @@ class HomeDashboard {
     required this.suggestion,
   });
 
-  final String greetingName;
   final String dayLabel;
   final NutritionSummary nutrition;
   final WaterSummary water;

@@ -14,6 +14,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../bloc/auth_session_bloc.dart';
 import '../cubit/sign_in_cubit.dart';
 import '../utils/auth_validation.dart';
+import '../widgets/auth_underlined_text.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -66,7 +67,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     'Welcome back${state.user?.name == null ? '' : ', ${state.user!.name}'}!',
                 type: AppToastType.success,
               );
-              context.go('/home');
+              context.go('/splash?destination=home');
             } else if (state.status == AuthSessionStatus.failure) {
               AppToast.show(
                 context,
@@ -162,12 +163,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 minimumSize: Size.zero,
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              child: const Text(
-                                'Forgot password?',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              child: const AuthUnderlinedText(
+                                text: 'Forgot password?',
                               ),
                             ),
                           ),
@@ -177,15 +174,23 @@ class _SignInScreenState extends State<SignInScreen> {
                             onPressed: () => _signIn(context),
                           ),
                           SizedBox(height: AppResponsive.value(context, 12)),
-                          GestureDetector(
-                            onTap: () => context.push('/sign-up'),
-                            child: const Text(
-                              'New to NutriVision? Sign Up',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.darkGreen,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
+                          Center(
+                            child: GestureDetector(
+                              onTap: () => context.push('/sign-up'),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'New to NutriVision?',
+                                    style: TextStyle(
+                                      color: AppColors.darkGreen,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  const AuthUnderlinedText(text: 'Sign Up'),
+                                ],
                               ),
                             ),
                           ),

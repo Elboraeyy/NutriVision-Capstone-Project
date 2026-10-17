@@ -3,6 +3,19 @@ abstract final class AuthValidation {
     return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
   }
 
+  static bool hasMinimumPasswordLength(String value) => value.length >= 8;
+
+  static bool hasPasswordLetter(String value) =>
+      RegExp(r'[A-Za-z]').hasMatch(value);
+
+  static bool hasPasswordNumber(String value) => RegExp(r'\d').hasMatch(value);
+
+  static bool isValidPassword(String value) {
+    return hasMinimumPasswordLength(value) &&
+        hasPasswordLetter(value) &&
+        hasPasswordNumber(value);
+  }
+
   static String? validateSignIn({
     required String email,
     required String password,
@@ -21,11 +34,10 @@ abstract final class AuthValidation {
   }) {
     if (name.trim().isEmpty) return 'Please enter your name.';
     if (!isValidEmail(email)) return 'Please enter a valid email.';
-    if (password.length < 8) {
+    if (!hasMinimumPasswordLength(password)) {
       return 'Password must be at least 8 characters.';
     }
-    if (!RegExp(r'[A-Za-z]').hasMatch(password) ||
-        !RegExp(r'\d').hasMatch(password)) {
+    if (!hasPasswordLetter(password) || !hasPasswordNumber(password)) {
       return 'Password needs a letter and a number.';
     }
     if (password != confirmPassword) return 'Passwords must match.';
