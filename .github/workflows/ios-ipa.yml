@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - elboraey
   workflow_dispatch:
 
 permissions:
