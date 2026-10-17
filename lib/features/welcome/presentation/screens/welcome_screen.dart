@@ -7,11 +7,61 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/widgets/design_status_bar.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onSignIn, this.onSignUp});
 
   final VoidCallback? onSignIn;
   final VoidCallback? onSignUp;
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<double> _headerFade;
+  late final Animation<Offset> _headerSlide;
+  late final Animation<double> _contentFade;
+  late final Animation<Offset> _contentSlide;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _headerFade = CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0, .6, curve: Curves.easeOut),
+    );
+    _headerSlide = Tween<Offset>(begin: const Offset(0, -.08), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0, .7, curve: Curves.easeOutCubic),
+          ),
+        );
+    _contentFade = CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(.2, 1, curve: Curves.easeOut),
+    );
+    _contentSlide = Tween<Offset>(begin: const Offset(0, .06), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(.2, 1, curve: Curves.easeOutCubic),
+          ),
+        );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,29 +69,44 @@ class WelcomeScreen extends StatelessWidget {
       backgroundColor: AppColors.cream,
       body: Column(
         children: [
-          const _WelcomeHeader(),
+          FadeTransition(
+            opacity: _headerFade,
+            child: SlideTransition(
+              position: _headerSlide,
+              child: const _WelcomeHeader(),
+            ),
+          ),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                AppResponsive.value(context, 20),
-                AppResponsive.value(context, 18),
-                AppResponsive.value(context, 20),
-                0,
-              ),
-              child: CustomScrollView(
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const _Introduction(),
-                        const Spacer(),
-                        _EntryActions(onSignIn: onSignIn, onSignUp: onSignUp),
-                      ],
-                    ),
+            child: FadeTransition(
+              opacity: _contentFade,
+              child: SlideTransition(
+                position: _contentSlide,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppResponsive.value(context, 20),
+                    AppResponsive.value(context, 18),
+                    AppResponsive.value(context, 20),
+                    0,
                   ),
-                ],
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const _Introduction(),
+                            const Spacer(),
+                            _EntryActions(
+                              onSignIn: widget.onSignIn,
+                              onSignUp: widget.onSignUp,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -67,40 +132,46 @@ class _WelcomeHeader extends StatelessWidget {
           bottomRight: Radius.circular(AppResponsive.value(context, 70)),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
         children: [
-          SizedBox(
+          Positioned(
+            top: 0,
+            left: AppResponsive.value(context, 10),
+            right: AppResponsive.value(context, 10),
             height: AppResponsive.value(context, 44),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppResponsive.value(context, 10),
-              ),
-              child: const DesignStatusBar(
-                assetPath: AppAssets.welcomeDeviceStatus,
-              ),
+            child: const DesignStatusBar(
+              assetPath: AppAssets.welcomeDeviceStatus,
             ),
           ),
-          SizedBox(height: AppResponsive.value(context, 22)),
-          Text(
-            'NutriVision',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: AppResponsive.font(context, 27),
-              fontWeight: FontWeight.w800,
-              height: 1.2,
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 16)),
-          Text(
-            'A little clarity. Every day.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 12),
-              fontWeight: FontWeight.w400,
-              height: 1.2,
+          Positioned.fill(
+            top: AppResponsive.value(context, 44),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'NutriVision',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: AppResponsive.font(context, 27),
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                    ),
+                  ),
+                  SizedBox(height: AppResponsive.value(context, 12)),
+                  Text(
+                    'A little clarity. Every day.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.softGreen,
+                      fontSize: AppResponsive.font(context, 12),
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
