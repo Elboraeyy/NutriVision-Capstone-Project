@@ -1,0 +1,11 @@
+---
+description: NutriVision architecture and development conventions
+alwaysApply: true
+---
+
+Read and follow the root `AGENTS.md` before making any change. It is the
+canonical source of truth for this Flutter project. Preserve Clean Architecture
+by feature, real Bloc for shared workflows, Cubit only for small local state,
+RepositoryProvider-based dependency injection, thin screens, reusable feature
+widgets, the existing floating/transparent UI composition, and the required
+format/analyze/test checks.

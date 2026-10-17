@@ -2,6 +2,22 @@
 
 Thank you for contributing to the NutriVision capstone project. This document describes the initial collaboration rules for the team. It can be expanded as the project workflow becomes more specific.
 
+Before making code changes, read the root [`AGENTS.md`](AGENTS.md). It is the
+canonical guide for the current Clean Architecture, Bloc/Cubit policy,
+dependency injection, UI conventions, and verification requirements.
+
+## Architecture
+
+Organize new functionality by feature using `data`, `domain`, and
+`presentation` layers. Keep repository contracts and use cases in `domain`,
+concrete implementations in `data`, and screens/widgets/state managers in
+`presentation`.
+
+Use a real `Bloc<Event, State>` for shared or asynchronous feature workflows.
+Use Cubit only for small local UI state. Register repositories through
+`MultiRepositoryProvider` in `lib/app/app.dart`; screens must not construct
+repositories or call them directly.
+
 ## Branches
 
 Create a focused branch from the latest shared branch. Use one of these prefixes:
