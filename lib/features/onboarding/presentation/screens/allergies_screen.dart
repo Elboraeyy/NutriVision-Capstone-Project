@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/widgets/app_action_button.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_widgets.dart';
 
@@ -21,10 +22,10 @@ class AllergiesScreen extends StatelessWidget {
           if (state.status == OnboardingStatus.completed) {
             context.go('/home');
           } else if (state.status == OnboardingStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message ?? 'Unable to save onboarding.'),
-              ),
+            AppToast.show(
+              context,
+              message: state.message ?? 'Unable to save onboarding.',
+              type: AppToastType.error,
             );
           }
         },

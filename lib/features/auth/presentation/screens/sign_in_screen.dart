@@ -10,6 +10,7 @@ import '../../../../core/widgets/app_green_header.dart';
 import '../../../../core/widgets/app_overlay_scaffold.dart';
 import '../../../../core/widgets/app_action_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../bloc/auth_session_bloc.dart';
 import '../cubit/sign_in_cubit.dart';
 import '../utils/auth_validation.dart';
@@ -38,9 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
       password: _passwordController.text,
     );
     if (error != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
+      AppToast.show(context, message: error, type: AppToastType.error);
       return;
     }
 
@@ -63,8 +62,10 @@ class _SignInScreenState extends State<SignInScreen> {
             if (state.status == AuthSessionStatus.signedIn) {
               context.go('/home');
             } else if (state.status == AuthSessionStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message ?? 'Unable to sign in.')),
+              AppToast.show(
+                context,
+                message: state.message ?? 'Unable to sign in.',
+                type: AppToastType.error,
               );
             }
           },
@@ -135,19 +136,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                 if (!AuthValidation.isValidEmail(
                                   _emailController.text,
                                 )) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Enter your email first.'),
-                                    ),
+                                  AppToast.show(
+                                    context,
+                                    message: 'Enter your email first.',
+                                    type: AppToastType.warning,
                                   );
                                   return;
                                 }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Password reset will be connected with Firebase.',
-                                    ),
-                                  ),
+                                AppToast.show(
+                                  context,
+                                  message:
+                                      'Password reset will be available soon.',
+                                  type: AppToastType.info,
                                 );
                               },
                               style: TextButton.styleFrom(

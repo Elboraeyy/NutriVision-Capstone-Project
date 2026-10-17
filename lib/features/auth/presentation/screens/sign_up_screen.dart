@@ -10,6 +10,7 @@ import '../../../../core/widgets/app_action_button.dart';
 import '../../../../core/widgets/app_green_header.dart';
 import '../../../../core/widgets/app_overlay_scaffold.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../bloc/auth_session_bloc.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../../../onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -47,9 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       termsAccepted: formState.isTermsAccepted,
     );
     if (error != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error)));
+      AppToast.show(context, message: error, type: AppToastType.error);
       return;
     }
 
@@ -74,10 +73,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               context.read<OnboardingBloc>().add(const OnboardingReset());
               context.pushNamed('onboarding-goal');
             } else if (state.status == AuthSessionStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message ?? 'Unable to create account.'),
-                ),
+              AppToast.show(
+                context,
+                message: state.message ?? 'Unable to create account.',
+                type: AppToastType.error,
               );
             }
           },

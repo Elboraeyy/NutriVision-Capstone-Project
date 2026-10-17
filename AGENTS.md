@@ -88,6 +88,9 @@ Rules for blocs/cubits:
   `AppResponsive`, `AppTheme`, and `AppSystemUi`.
 - Reuse shared controls from `lib/core/widgets/` before creating another
   equivalent component.
+- Use `AppToast` from `lib/core/widgets/app_toast.dart` for every in-app
+  notification. Never introduce a raw `SnackBar` or a feature-specific toast.
+  Select `success`, `error`, `warning`, or `info` according to the situation.
 - Use `AppOverlayScaffold` for screens whose header overlays scrollable content.
   Keep the space around headers transparent and allow the body to scroll behind
   the header when that is the established design.

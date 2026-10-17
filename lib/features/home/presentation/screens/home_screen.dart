@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/theme/app_system_ui.dart';
 import '../../../../core/widgets/app_overlay_scaffold.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../domain/entities/home_dashboard.dart';
 import '../bloc/home_bloc.dart';
 
@@ -58,13 +59,10 @@ class HomeScreen extends StatelessWidget {
 }
 
 void _showComingSoon(BuildContext context, String feature) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text('$feature will be connected soon.'),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 1400),
-      ),
-    );
+  AppToast.show(
+    context,
+    message: '$feature will be connected soon.',
+    type: AppToastType.info,
+    duration: const Duration(milliseconds: 2000),
+  );
 }
