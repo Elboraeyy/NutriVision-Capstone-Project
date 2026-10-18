@@ -20,6 +20,20 @@ NutriVision is a cross-platform Flutter application that helps users make better
 - Git & GitHub
 - Unit and widget testing
 
+## Project documentation
+
+The project deliverables are available in [`docs/pdfs`](docs/pdfs), with an
+index and short description in [`docs/README.md`](docs/README.md):
+
+- [`Project Planning & Management`](docs/pdfs/nutrivision_project_planning.pdf)
+  — project overview, plan, roles, risk mitigation, and KPIs.
+- [`Literature Review`](docs/pdfs/nutrivision_literature_review.pdf)
+  — feedback and evaluation, suggested improvements, and final grading
+  criteria.
+- [`Requirements Gathering`](docs/pdfs/nutrivision_requirements_gathering.pdf)
+  — stakeholder analysis, user stories and use cases, and functional and
+  non-functional requirements.
+
 ## Team
 
 - Mohamed Samy
