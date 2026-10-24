@@ -9,14 +9,14 @@ NutriVision is a cross-platform Flutter application that helps users make better
 - AI-generated nutritional advice and personalized recipes.
 - Healthy alternatives based on user preferences and dietary restrictions.
 - Meal history and nutritional insights.
-- Real-time meal-log synchronization using Firebase Cloud Firestore.
+- Meal-log synchronization through a backend repository (planned integration).
 - Responsive and user-friendly interface.
 
 ## Technologies
 
 - Flutter & Dart
-- Dio for networking
-- Firebase Cloud Firestore
+- `flutter_bloc` for state management
+- `go_router` for navigation
 - Git & GitHub
 - Unit and widget testing
 
@@ -34,6 +34,38 @@ index and short description in [`docs/README.md`](docs/README.md):
   — stakeholder analysis, user stories and use cases, and functional and
   non-functional requirements.
 
+The current repositories use in-memory implementations so the UI and domain
+flows can be developed independently of a backend. A production API or cloud
+database can be added later behind the existing repository contracts.
+
+## Architecture
+
+The project follows Clean Architecture by feature:
+
+```text
+lib/features/<feature>/
+  data/          concrete repository implementations
+  domain/        entities, repository contracts, use cases
+  presentation/ blocs, cubits, screens, and widgets
+```
+
+Shared repositories are registered in `lib/app/app.dart` with
+`MultiRepositoryProvider`, then injected into feature use cases and blocs.
+Feature workflows use `Bloc<Event, State>`; Cubit is reserved for small local
+UI state such as password visibility and terms selection. Home dashboard
+sections live in `lib/features/home/presentation/widgets/` so route screens
+stay focused on composition.
+
+For the complete coding-agent rules and project conventions, read
+[`AGENTS.md`](AGENTS.md).
+
+## iOS IPA builds
+
+The GitHub Actions workflow in [`.github/workflows/ios-ipa.yml`](.github/workflows/ios-ipa.yml)
+builds and uploads an unsigned IPA artifact on pushes to `main` or manual
+workflow runs. See [`docs/ios-ipa.md`](docs/ios-ipa.md) for download and Apple
+signing details.
+
 ## Team
 
 - Mohamed Samy
@@ -50,4 +82,5 @@ index and short description in [`docs/README.md`](docs/README.md):
 
 This is the graduation project of the fifth round of the Digital Egypt Pioneers Initiative (DEPI), Cross-Platform / Flutter track.
 
-The project is currently in the initial planning and setup stage.
+The project is actively being built. Run `dart format .`, `flutter analyze`,
+and `flutter test` before submitting changes.
