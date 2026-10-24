@@ -59,6 +59,12 @@ stay focused on composition.
 For the complete coding-agent rules and project conventions, read
 [`AGENTS.md`](AGENTS.md).
 
+For the detailed feature architecture and AI-agent handoff guide, read
+[`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+Project-specific agent skills, templates, and the inventory of tool-specific
+instructions are collected in [`agents/README.md`](agents/README.md).
+
 ## iOS IPA builds
 
 The GitHub Actions workflow in [`.github/workflows/ios-ipa.yml`](.github/workflows/ios-ipa.yml)

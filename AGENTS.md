@@ -4,6 +4,10 @@ This file is the canonical instruction source for AI coding agents working in
 this repository. Read it before changing code. If another agent-specific file
 links here, these rules remain the source of truth.
 
+Reusable project-specific skills and task templates are collected in
+[`agents/README.md`](agents/README.md). Tool-specific instruction files remain
+in their standard discovery paths and are indexed there.
+
 ## Project context
 
 NutriVision is a Flutter/Dart nutrition assistant app. The current app includes
@@ -121,6 +125,52 @@ Rules for blocs/cubits:
 - The temporary behavior after account creation opens onboarding. Preserve it
   until the product owner requests a different flow.
 
+## Agent operating protocol
+
+For every meaningful task, use the project lifecycle in
+[`agents/README.md`](agents/README.md): discover, plan, design, build, test,
+audit, and handoff.
+
+Before editing:
+
+- Read this file and [`ARCHITECTURE.md`](ARCHITECTURE.md).
+- Read the relevant skill under [`agents/skills/`](agents/skills/).
+- Inspect the existing feature, tests, router, composition root, and shared
+  widgets before creating new code.
+- Preserve unrelated working-tree changes.
+
+During implementation:
+
+- Search for existing widgets, validators, mappers, formatters, and state before
+  creating a duplicate.
+- Extract repeated behavior into a small typed reusable widget/helper in the
+  nearest correct layer.
+- Keep feature-specific behavior in the feature; move code to `core/` only when
+  it is genuinely cross-feature.
+- Create or update a feature-specific test artifact under `agents/tests/`.
+- If inherited code violates this architecture, repair the smallest safe slice,
+  add regression coverage, and document the repair instead of extending the
+  violation.
+
+For API or AI work:
+
+- Keep network, storage, and provider SDK code behind data/repository boundaries.
+- Never put API keys, AI provider secrets, or privileged calls in the Flutter
+  client, source control, test fixtures, or logs.
+- Validate external data and AI output before using it in the UI.
+- Define timeout, cancellation, retry, offline, quota, unsafe, and unavailable
+  behavior explicitly.
+- Protect and minimize personally identifiable and health-sensitive data.
+
+## Reuse and quality policy
+
+- Prefer composition and small reusable widgets over copy/paste screens.
+- Use one source of truth for shared data and one canonical design-token system.
+- Do not add a dependency, global manager, service locator, or generic framework
+  when existing project code can solve the problem.
+- A task is not complete until the applicable architecture, UI, data/security,
+  and test gates in `agents/tests/quality-gates.md` are reviewed.
+
 ## Testing and verification
 
 For every meaningful code change:
@@ -132,6 +182,12 @@ For every meaningful code change:
 Feature state tests should dispatch Bloc events and assert resulting states,
 rather than testing private implementation details. Add widget tests when a UI
 flow, navigation behavior, or shared widget changes.
+
+For every meaningful feature or integration, create or update a plan under
+`agents/tests/` and add executable tests under `test/` or `integration_test/`.
+Use unit tests for domain/data logic, Bloc/Cubit tests for state transitions,
+widget tests for UI and wiring, integration tests for critical journeys, and
+AI evaluation cases for quality, safety, schema validity, and fallback behavior.
 
 Before declaring a task complete, verify that:
 
