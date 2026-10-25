@@ -34,6 +34,7 @@ test plan is needed. Do not put executable Dart tests in this folder.
 | AI | [`stages/05-ai-test.md`](stages/05-ai-test.md) | Schema, safety, quality, fallback, and evaluation cases. |
 | Integration | [`stages/06-integration-test.md`](stages/06-integration-test.md) | Critical user journeys through app wiring. |
 | Release | [`stages/07-release-test.md`](stages/07-release-test.md) | CI, configuration, privacy, and release readiness. |
+| Architecture scaffold | [`stages/08-architecture-scaffold.md`](stages/08-architecture-scaffold.md) | Folder ownership and handoff readiness. |
 
 ## Test naming and location
 

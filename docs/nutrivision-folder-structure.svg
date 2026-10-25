@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1780" viewBox="0 0 2400 1780" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1420" viewBox="0 0 2200 1420" role="img" aria-labelledby="title description">
   <title id="title">NutriVision generic lib architecture</title>
-  <desc id="description">A generic feature-first Clean Architecture blueprint for the lib folder, showing app, core, feature layers, and dependency flow.</desc>
+  <desc id="description">A generic feature-first Clean Architecture blueprint for the lib folder, showing application composition, shared core folders, and the layers inside any feature.</desc>
   <style>
     .bg { fill: #f7f3e8; }
     .panel { fill: #fffdf8; stroke: #d7dfd2; stroke-width: 2; }
@@ -17,7 +17,6 @@
     .note { fill: #6d7d75; font: 13px Arial, sans-serif; }
     .rule { fill: #164a3b; font: 700 14px Arial, sans-serif; }
     .line { stroke: #b8cdbb; stroke-width: 1.5; }
-    .arrow { stroke: #2f735d; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
     .soft-arrow { stroke: #87a995; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
   </style>
   <defs>
@@ -26,16 +25,16 @@
     </marker>
   </defs>
 
-  <rect class="bg" width="2400" height="1780"/>
-  <text x="65" y="70" class="title">NutriVision Generic Feature-First Architecture</text>
-  <text x="65" y="108" class="note">Reusable blueprint for every feature • lib/ only • platform folders and other project areas are intentionally excluded</text>
-  <rect x="65" y="138" width="2270" height="56" rx="14" class="accent"/>
-  <text x="92" y="173" class="rule">One-way request flow: Screen / Widget → Bloc or Cubit → Use Case → Repository Contract → Repository Implementation → Data Source</text>
+  <rect class="bg" width="2200" height="1420"/>
+  <text x="60" y="64" class="title">NutriVision Generic Feature-First Architecture</text>
+  <text x="60" y="101" class="note">Reusable blueprint for the application source inside lib/</text>
+  <rect x="50" y="130" width="2100" height="62" rx="14" class="accent"/>
+  <text x="78" y="168" class="rule">Screen / Widget → Bloc or Cubit → Use Case → Repository Contract → Repository Implementation → Data Source</text>
 
   <!-- lib tree -->
-  <rect x="50" y="230" width="590" height="1420" rx="18" class="panel"/>
+  <rect x="50" y="230" width="600" height="1125" rx="18" class="panel"/>
   <text x="80" y="278" class="panel-title">lib/</text>
-  <line x1="80" y1="298" x2="610" y2="298" class="line"/>
+  <line x1="80" y1="298" x2="620" y2="298" class="line"/>
 
   <text x="84" y="338" class="section">Application composition</text>
   <text x="92" y="368" class="tree">├── main.dart</text>
@@ -43,146 +42,103 @@
   <text x="108" y="416" class="tree">├── app.dart</text>
   <text x="108" y="440" class="tree">├── observer/</text>
   <text x="124" y="464" class="tree">└── app_bloc_observer.dart</text>
-  <text x="108" y="488" class="tree">└── router/</text>
-  <text x="124" y="512" class="tree">└── app_router.dart</text>
+  <text x="108" y="488" class="tree">└── router/app_router.dart</text>
 
-  <text x="84" y="560" class="section">Shared foundation</text>
-  <text x="92" y="590" class="tree">└── core/</text>
-  <text x="108" y="614" class="tree">├── constants/</text>
-  <text x="124" y="638" class="tree">└── app_assets.dart</text>
-  <text x="108" y="662" class="tree">├── theme/</text>
-  <text x="124" y="686" class="tree">├── app_colors.dart</text>
-  <text x="124" y="710" class="tree">├── app_responsive.dart</text>
-  <text x="124" y="734" class="tree">├── app_system_ui.dart</text>
-  <text x="124" y="758" class="tree">└── app_theme.dart</text>
-  <text x="108" y="782" class="tree">└── widgets/</text>
-  <text x="124" y="806" class="tree">├── shared controls</text>
-  <text x="124" y="830" class="tree">├── AppOverlayScaffold</text>
-  <text x="124" y="854" class="tree">└── AppToast</text>
+  <text x="84" y="536" class="section">Shared foundation</text>
+  <text x="92" y="566" class="tree">└── core/</text>
+  <text x="108" y="590" class="tree">├── constants/</text>
+  <text x="108" y="614" class="tree">├── config/</text>
+  <text x="108" y="638" class="tree">├── errors/</text>
+  <text x="108" y="662" class="tree">├── network/</text>
+  <text x="108" y="686" class="tree">├── storage/</text>
+  <text x="108" y="710" class="tree">├── theme/</text>
+  <text x="108" y="734" class="tree">├── utils/</text>
+  <text x="108" y="758" class="tree">└── widgets/</text>
 
-  <text x="84" y="902" class="section">Feature modules</text>
-  <text x="92" y="932" class="tree">└── features/</text>
-  <text x="108" y="956" class="tree">├── &lt;feature-a&gt;/</text>
-  <text x="124" y="980" class="tree">├── data/</text>
-  <text x="124" y="1004" class="tree">├── domain/</text>
-  <text x="124" y="1028" class="tree">└── presentation/</text>
-  <text x="108" y="1052" class="tree">├── &lt;feature-b&gt;/</text>
-  <text x="124" y="1076" class="tree">└── same 3-layer structure</text>
-  <text x="108" y="1100" class="tree">└── &lt;feature-n&gt;/</text>
+  <text x="84" y="806" class="section">Feature modules</text>
+  <text x="92" y="836" class="tree">└── features/</text>
+  <text x="108" y="860" class="tree">├── auth/</text>
+  <text x="108" y="884" class="tree">├── onboarding/</text>
+  <text x="108" y="908" class="tree">├── home/</text>
+  <text x="108" y="932" class="tree">├── profile/</text>
+  <text x="108" y="956" class="tree">├── nutrition/</text>
+  <text x="108" y="980" class="tree">├── meals/</text>
+  <text x="108" y="1004" class="tree">├── ai_assistant/</text>
+  <text x="108" y="1028" class="tree">├── recommendations/</text>
+  <text x="108" y="1052" class="tree">├── splash/</text>
+  <text x="108" y="1076" class="tree">└── welcome/</text>
 
-  <rect x="84" y="1150" width="520" height="188" rx="12" class="accent"/>
-  <text x="108" y="1184" class="rule">Composition root rule</text>
-  <text x="108" y="1212" class="note">app.dart registers repositories, use cases,</text>
-  <text x="108" y="1235" class="note">and feature state managers with providers.</text>
-  <text x="108" y="1275" class="note">Features depend on core helpers; core does</text>
-  <text x="108" y="1298" class="note">not depend on a specific feature.</text>
+  <rect x="84" y="1120" width="532" height="170" rx="12" class="accent"/>
+  <text x="108" y="1154" class="rule">Scope of this blueprint</text>
+  <text x="108" y="1182" class="note">Only lib/ source architecture is shown.</text>
+  <text x="108" y="1207" class="note">Platform folders and unrelated project areas</text>
+  <text x="108" y="1232" class="note">are intentionally not part of the feature map.</text>
 
   <!-- generic feature -->
-  <rect x="670" y="230" width="1030" height="1420" rx="18" class="panel"/>
-  <text x="700" y="278" class="panel-title">lib/features/&lt;feature&gt;/</text>
-  <text x="700" y="306" class="note">Every feature owns its data, domain, and presentation code.</text>
-  <line x1="700" y1="326" x2="1670" y2="326" class="line"/>
+  <rect x="690" y="230" width="1460" height="1125" rx="18" class="panel"/>
+  <text x="720" y="278" class="panel-title">lib/features/&lt;feature&gt;/</text>
+  <text x="720" y="306" class="note">Every feature owns its data, domain, and presentation code.</text>
+  <line x1="720" y1="326" x2="2120" y2="326" class="line"/>
 
-  <rect x="700" y="370" width="290" height="760" rx="16" class="card-data"/>
-  <text x="728" y="416" class="layer-title">data/</text>
-  <text x="728" y="446" class="note">How data is obtained</text>
-  <line x1="728" y1="466" x2="962" y2="466" class="line"/>
-  <text x="728" y="506" class="small-tree">├── repositories/</text>
-  <text x="744" y="530" class="small-tree">└── in_memory_...</text>
-  <text x="728" y="574" class="small-tree">├── models/</text>
-  <text x="744" y="598" class="small-tree">└── optional DTOs</text>
-  <text x="728" y="642" class="small-tree">└── datasources/</text>
-  <text x="744" y="666" class="small-tree">└── optional API/storage</text>
-  <rect x="728" y="720" width="234" height="160" rx="10" fill="#fffdf8" opacity="0.75"/>
-  <text x="744" y="752" class="rule">Responsibilities</text>
-  <text x="744" y="780" class="note">• implement contracts</text>
-  <text x="744" y="804" class="note">• map DTOs to entities</text>
-  <text x="744" y="828" class="note">• hide API/storage details</text>
-  <text x="744" y="852" class="note">• expose stable failures</text>
+  <rect x="720" y="370" width="390" height="690" rx="16" class="card-data"/>
+  <text x="750" y="416" class="layer-title">data/</text>
+  <text x="750" y="446" class="note">How data is obtained</text>
+  <line x1="750" y1="466" x2="1080" y2="466" class="line"/>
+  <text x="750" y="506" class="small-tree">├── repositories/</text>
+  <text x="766" y="530" class="small-tree">└── concrete impl.</text>
+  <text x="750" y="574" class="small-tree">├── models/</text>
+  <text x="766" y="598" class="small-tree">└── DTOs / mappers</text>
+  <text x="750" y="642" class="small-tree">└── datasources/</text>
+  <text x="766" y="666" class="small-tree">└── API / storage</text>
+  <rect x="750" y="720" width="330" height="210" rx="10" fill="#fffdf8" opacity="0.75"/>
+  <text x="770" y="752" class="rule">Responsibilities</text>
+  <text x="770" y="782" class="note">• implement domain contracts</text>
+  <text x="770" y="812" class="note">• map external data</text>
+  <text x="770" y="842" class="note">• hide API/storage details</text>
+  <text x="770" y="872" class="note">• expose stable failures</text>
 
-  <rect x="1040" y="370" width="290" height="760" rx="16" class="card-domain"/>
-  <text x="1068" y="416" class="layer-title">domain/</text>
-  <text x="1068" y="446" class="note">What the feature means</text>
-  <line x1="1068" y1="466" x2="1302" y2="466" class="line"/>
-  <text x="1068" y="506" class="small-tree">├── entities/</text>
-  <text x="1084" y="530" class="small-tree">└── &lt;entity&gt;.dart</text>
-  <text x="1068" y="574" class="small-tree">├── repositories/</text>
-  <text x="1084" y="598" class="small-tree">└── &lt;feature&gt;_repository.dart</text>
-  <text x="1068" y="642" class="small-tree">└── usecases/</text>
-  <text x="1084" y="666" class="small-tree">└── &lt;action&gt;.dart</text>
-  <rect x="1068" y="720" width="234" height="160" rx="10" fill="#fffdf8" opacity="0.75"/>
-  <text x="1084" y="752" class="rule">Responsibilities</text>
-  <text x="1084" y="780" class="note">• business entities</text>
-  <text x="1084" y="804" class="note">• abstract contracts</text>
-  <text x="1084" y="828" class="note">• one action per use case</text>
-  <text x="1084" y="852" class="note">• no Flutter imports</text>
+  <rect x="1175" y="370" width="390" height="690" rx="16" class="card-domain"/>
+  <text x="1205" y="416" class="layer-title">domain/</text>
+  <text x="1205" y="446" class="note">What the feature means</text>
+  <line x1="1205" y1="466" x2="1535" y2="466" class="line"/>
+  <text x="1205" y="506" class="small-tree">├── entities/</text>
+  <text x="1221" y="530" class="small-tree">└── business models</text>
+  <text x="1205" y="574" class="small-tree">├── repositories/</text>
+  <text x="1221" y="598" class="small-tree">└── abstract contracts</text>
+  <text x="1205" y="642" class="small-tree">└── usecases/</text>
+  <text x="1221" y="666" class="small-tree">└── one action each</text>
+  <rect x="1205" y="720" width="330" height="210" rx="10" fill="#fffdf8" opacity="0.75"/>
+  <text x="1225" y="752" class="rule">Responsibilities</text>
+  <text x="1225" y="782" class="note">• business entities</text>
+  <text x="1225" y="812" class="note">• abstract contracts</text>
+  <text x="1225" y="842" class="note">• business actions</text>
+  <text x="1225" y="872" class="note">• no Flutter imports</text>
 
-  <rect x="1380" y="370" width="290" height="760" rx="16" class="card-presentation"/>
-  <text x="1408" y="416" class="layer-title">presentation/</text>
-  <text x="1408" y="446" class="note">How the user interacts</text>
-  <line x1="1408" y1="466" x2="1642" y2="466" class="line"/>
-  <text x="1408" y="506" class="small-tree">├── bloc/</text>
-  <text x="1424" y="530" class="small-tree">└── &lt;feature&gt;_bloc.dart</text>
-  <text x="1408" y="574" class="small-tree">├── cubit/</text>
-  <text x="1424" y="598" class="small-tree">└── local_state_cubit.dart</text>
-  <text x="1408" y="642" class="small-tree">├── screens/</text>
-  <text x="1424" y="666" class="small-tree">└── &lt;feature&gt;_screen.dart</text>
-  <text x="1408" y="710" class="small-tree">└── widgets/</text>
-  <text x="1424" y="734" class="small-tree">└── feature_widgets.dart</text>
-  <rect x="1408" y="780" width="234" height="160" rx="10" fill="#fffdf8" opacity="0.75"/>
-  <text x="1424" y="812" class="rule">Responsibilities</text>
-  <text x="1424" y="840" class="note">• render state</text>
-  <text x="1424" y="864" class="note">• dispatch events</text>
-  <text x="1424" y="888" class="note">• listen for side effects</text>
-  <text x="1424" y="912" class="note">• no direct repositories</text>
+  <rect x="1630" y="370" width="490" height="690" rx="16" class="card-presentation"/>
+  <text x="1660" y="416" class="layer-title">presentation/</text>
+  <text x="1660" y="446" class="note">How the user interacts</text>
+  <line x1="1660" y1="466" x2="2090" y2="466" class="line"/>
+  <text x="1660" y="506" class="small-tree">├── bloc/</text>
+  <text x="1676" y="530" class="small-tree">└── shared workflows</text>
+  <text x="1660" y="574" class="small-tree">├── cubit/</text>
+  <text x="1676" y="598" class="small-tree">└── local UI state</text>
+  <text x="1660" y="642" class="small-tree">├── screens/</text>
+  <text x="1676" y="666" class="small-tree">└── route-level screens</text>
+  <text x="1660" y="710" class="small-tree">└── widgets/</text>
+  <text x="1676" y="734" class="small-tree">└── feature components</text>
+  <rect x="1660" y="780" width="430" height="210" rx="10" fill="#fffdf8" opacity="0.75"/>
+  <text x="1680" y="812" class="rule">Responsibilities</text>
+  <text x="1680" y="842" class="note">• render immutable state</text>
+  <text x="1680" y="872" class="note">• dispatch events</text>
+  <text x="1680" y="902" class="note">• listen for side effects</text>
+  <text x="1680" y="932" class="note">• keep routes and screens thin</text>
 
-  <path d="M 990 1010 L 1030 1010" class="soft-arrow"/>
-  <path d="M 1330 1010 L 1370 1010" class="soft-arrow"/>
-  <text x="720" y="1190" class="rule">Layer relationship: presentation uses domain; data implements domain contracts.</text>
-  <text x="720" y="1220" class="note">The domain stays independent so the backend can change without rewriting the UI.</text>
+  <path d="M 1110 1015 L 1165 1015" class="soft-arrow"/>
+  <path d="M 1565 1015 L 1620 1015" class="soft-arrow"/>
+  <rect x="720" y="1130" width="1400" height="150" rx="14" class="accent"/>
+  <text x="750" y="1170" class="rule">Dependency direction</text>
+  <text x="750" y="1202" class="note">Presentation uses domain contracts; data implements those contracts.</text>
+  <text x="750" y="1232" class="note">The domain stays independent so the data source can change without rewriting the UI.</text>
 
-  <!-- composition and flow -->
-  <rect x="1730" y="230" width="620" height="1420" rx="18" class="panel"/>
-  <text x="1760" y="278" class="panel-title">Rules and dependency flow</text>
-  <line x1="1760" y1="298" x2="2320" y2="298" class="line"/>
-
-  <rect x="1760" y="340" width="560" height="170" rx="14" class="accent"/>
-  <text x="1788" y="378" class="rule">Composition root: lib/app/app.dart</text>
-  <text x="1788" y="410" class="note">1. MultiRepositoryProvider</text>
-  <text x="1788" y="436" class="note">2. Build use cases from injected repositories</text>
-  <text x="1788" y="462" class="note">3. MultiBlocProvider for feature workflows</text>
-
-  <text x="1760" y="562" class="section">Request flow</text>
-  <rect x="1760" y="590" width="560" height="570" rx="14" class="panel"/>
-  <rect x="1790" y="620" width="500" height="56" rx="10" class="card-presentation"/>
-  <text x="1940" y="655" class="rule">Screen / Widget</text>
-  <path d="M 2040 676 L 2040 704" class="arrow"/>
-  <rect x="1790" y="710" width="500" height="56" rx="10" class="card-presentation"/>
-  <text x="1982" y="745" class="rule">Bloc or Cubit</text>
-  <path d="M 2040 766 L 2040 794" class="arrow"/>
-  <rect x="1790" y="800" width="500" height="56" rx="10" class="card-domain"/>
-  <text x="1985" y="835" class="rule">Use Case</text>
-  <path d="M 2040 856 L 2040 884" class="arrow"/>
-  <rect x="1790" y="890" width="500" height="56" rx="10" class="card-domain"/>
-  <text x="1915" y="925" class="rule">Repository Contract</text>
-  <path d="M 2040 946 L 2040 974" class="arrow"/>
-  <rect x="1790" y="980" width="500" height="56" rx="10" class="card-data"/>
-  <text x="1910" y="1015" class="rule">Repository Implementation</text>
-  <path d="M 2040 1036 L 2040 1064" class="arrow"/>
-  <rect x="1790" y="1070" width="500" height="56" rx="10" class="card-data"/>
-  <text x="1985" y="1105" class="rule">Data Source</text>
-
-  <text x="1760" y="1220" class="section">Never do this</text>
-  <text x="1770" y="1252" class="tree">✕ Screen → API/Firebase directly</text>
-  <text x="1770" y="1278" class="tree">✕ Widget → Repository directly</text>
-  <text x="1770" y="1304" class="tree">✕ Domain entity → Flutter import</text>
-  <text x="1770" y="1330" class="tree">✕ Business workflow → local boolean</text>
-
-  <rect x="1760" y="1370" width="560" height="170" rx="14" class="accent"/>
-  <text x="1788" y="1408" class="rule">Rule of thumb</text>
-  <text x="1788" y="1440" class="note">If more than one screen, async work, persistence,</text>
-  <text x="1788" y="1466" class="note">loading, failure, or navigation side effects are</text>
-  <text x="1788" y="1492" class="note">involved, model it as a Bloc workflow.</text>
-
-  <text x="65" y="1728" class="note">NutriVision • Generic architecture blueprint • Keep feature names and files specific to the feature being built.</text>
+  <text x="60" y="1392" class="note">NutriVision • Generic architecture blueprint • Add concrete files only when a feature needs them.</text>
 </svg>

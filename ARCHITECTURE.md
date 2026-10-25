@@ -35,6 +35,11 @@ Reusable project skills and agent task templates are collected in
 No Firebase, API client, database, or other backend should be added unless the
 product owner explicitly requests it.
 
+The repository includes an intentionally empty scaffold for the planned
+nutrition, meals, AI assistant, and recommendations features. The scaffold
+documents where future code belongs without pretending that a backend or AI
+provider has already been selected.
+
 ## 3. High-level dependency flow
 
 The dependency direction is one-way:
@@ -83,6 +88,30 @@ lib/features/<feature>/
     widgets/             # reusable feature-specific widgets
 ```
 
+The planned feature boundaries are:
+
+```text
+lib/features/
+  auth/             # session, sign in, sign up, sign out
+  onboarding/       # goals, dietary preferences, allergies
+  home/             # dashboard composition and summaries
+  profile/          # user profile and account settings
+  nutrition/        # food lookup and normalized nutrition facts
+  meals/            # meal logging, history, and daily summaries
+  ai_assistant/     # AI analysis and nutrition questions
+  recommendations/  # recipes and healthier alternatives
+  splash/           # presentation-only startup screen
+  welcome/          # presentation-only entry screen
+```
+
+`auth`, `onboarding`, and `home` are implemented workflows. `profile` has a
+presentation entry point and a ready data/domain scaffold. `nutrition`,
+`meals`, `ai_assistant`, and `recommendations` have documented empty layers so
+the next agent can add contracts first and then implementations. `splash` and
+`welcome` remain presentation-only until they gain business behavior; adding
+empty domain layers to static screens would create noise rather than improve
+the architecture.
+
 Shared application code belongs outside a feature:
 
 ```text
@@ -93,13 +122,22 @@ lib/
     observer/app_bloc_observer.dart
   core/
     constants/           # shared asset names and constants
+    config/               # environment-independent app configuration contracts
+    errors/               # shared failure types and error mapping contracts
+    network/              # generic HTTP client contracts and interceptors
+    storage/              # generic local-storage contracts and cache policies
     theme/               # colors, typography, responsive helpers, system UI
+    utils/                # genuinely cross-feature pure helpers
     widgets/             # genuinely reusable cross-feature widgets
   features/
     auth/
     home/
     onboarding/
     profile/
+    nutrition/
+    meals/
+    ai_assistant/
+    recommendations/
     splash/
     welcome/
   main.dart
@@ -111,11 +149,32 @@ The following image is a reusable blueprint for every NutriVision feature. It
 shows only the application source under `lib/`; platform folders, tests,
 documentation, assets, and generated files are intentionally excluded.
 
-![Generic NutriVision lib architecture](docs/nutrivision-folder-structure.svg)
+![Generic NutriVision lib architecture](docs/nutrivision-folder-structure.png)
+
+Editable source: [`docs/nutrivision-folder-structure.svg`](docs/nutrivision-folder-structure.svg).
 
 Do not create a second parallel architecture such as `lib/services/` for
 feature business logic or `lib/controllers/` for state that should be a Bloc
 or Cubit.
+
+Feature-specific API clients, data sources, DTOs, and mappers belong under the
+feature's `data/` directory. `lib/core/network/` may contain only generic
+transport behavior; it must not contain nutrition, Firebase, or AI business
+logic.
+
+The optional backend boundary is kept outside the Flutter client:
+
+```text
+backend/
+  functions/       # protected API/AI entry points
+  prompts/         # versioned prompts, never secrets
+  schemas/         # request/response and AI output schemas
+  tests/           # backend and AI evaluation tests
+```
+
+The backend scaffold is documentation-only until the team selects a provider.
+API keys, service accounts, user health data, and provider SDK calls must never
+be moved into `lib/` or committed to the repository.
 
 ## 5. Layer responsibilities
 

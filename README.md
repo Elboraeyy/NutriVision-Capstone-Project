@@ -56,11 +56,20 @@ UI state such as password visibility and terms selection. Home dashboard
 sections live in `lib/features/home/presentation/widgets/` so route screens
 stay focused on composition.
 
+The repository also contains a ready scaffold for the next product slices:
+`nutrition`, `meals`, `ai_assistant`, and `recommendations`. Their folders are
+intentionally empty until the team defines the domain contracts. Shared
+transport concerns belong in `lib/core/network/`, while protected API and AI
+provider calls belong outside the Flutter client under `backend/`.
+
 For the complete coding-agent rules and project conventions, read
 [`AGENTS.md`](AGENTS.md).
 
 For the detailed feature architecture and AI-agent handoff guide, read
 [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+For the architecture scaffold acceptance criteria, read
+[`agents/tests/stages/08-architecture-scaffold.md`](agents/tests/stages/08-architecture-scaffold.md).
 
 Project-specific agent skills, templates, and the inventory of tool-specific
 instructions are collected in [`agents/README.md`](agents/README.md).
