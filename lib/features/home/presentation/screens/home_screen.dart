@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../auth/presentation/bloc/auth_session_bloc.dart';
 import '../../domain/entities/home_dashboard.dart';
 import '../bloc/home_bloc.dart';
+import '../../../water_tracker/presentation/bloc/water_bloc.dart';
 
 part '../widgets/home_widgets.dart';
 
