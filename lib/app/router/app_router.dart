@@ -9,6 +9,7 @@ import '../../features/onboarding/presentation/screens/food_preferences_screen.d
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
+import '../../features/water_tracker/presentation/screens/water_tracker_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
 
 /// Application navigation map.
@@ -74,6 +75,11 @@ abstract final class AppRouter {
         name: 'profile',
         pageBuilder: (context, state) =>
             _onboardingPage(key: state.pageKey, child: const ProfileScreen()),
+      ),
+      GoRoute(
+        path: '/water-tracker',
+        name: 'water-tracker',
+        builder: (context, state) => const WaterTrackerScreen(),
       ),
     ],
   );

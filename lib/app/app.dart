@@ -19,6 +19,12 @@ import '../features/onboarding/domain/repositories/onboarding_repository.dart';
 import '../features/onboarding/domain/usecases/complete_onboarding.dart';
 import '../features/onboarding/domain/usecases/save_onboarding_draft.dart';
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../features/water_tracker/data/datasources/water_local_data_source.dart';
+import '../features/water_tracker/data/repositories/water_repository_impl.dart';
+import '../features/water_tracker/domain/repositories/water_repository.dart';
+import '../features/water_tracker/domain/usecases/add_water.dart';
+import '../features/water_tracker/domain/usecases/get_today_water.dart';
+import '../features/water_tracker/presentation/bloc/water_bloc.dart';
 
 /// Root application widget.
 ///
@@ -40,6 +46,10 @@ class NutriVisionApp extends StatelessWidget {
         ),
         RepositoryProvider<HomeRepository>(
           create: (_) => InMemoryHomeRepository(),
+        ),
+        RepositoryProvider<WaterRepository>(
+          create: (_) =>
+              WaterRepositoryImpl(SharedPreferencesWaterLocalDataSource()),
         ),
       ],
       child: MultiBlocProvider(
@@ -69,6 +79,15 @@ class NutriVisionApp extends StatelessWidget {
             create: (context) =>
                 HomeBloc(GetHomeDashboard(context.read<HomeRepository>()))
                   ..add(const HomeDashboardRequested()),
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<WaterRepository>();
+              return WaterBloc(
+                getTodayWater: GetTodayWater(repository),
+                addWater: AddWater(repository),
+              )..add(const WaterTrackerStarted());
+            },
           ),
         ],
         child: MaterialApp.router(

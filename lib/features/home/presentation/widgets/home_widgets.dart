@@ -167,7 +167,7 @@ class _HomeContent extends StatelessWidget {
                 ),
               ),
               SizedBox(height: AppResponsive.value(context, 12)),
-              _WaterCard(summary: dashboard.water),
+              const _WaterCard(),
               SizedBox(height: AppResponsive.value(context, 16)),
               const _SectionHeading(title: 'Recently logged', action: 'Diary'),
               SizedBox(height: AppResponsive.value(context, 8)),
@@ -527,97 +527,126 @@ class _ManualLogButton extends StatelessWidget {
 }
 
 class _WaterCard extends StatelessWidget {
-  const _WaterCard({required this.summary});
-
-  final WaterSummary summary;
+  const _WaterCard();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppResponsive.value(context, 12),
-        vertical: AppResponsive.value(context, 13),
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.softGreen,
-        borderRadius: BorderRadius.circular(AppResponsive.value(context, 21)),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.water_drop_outlined,
-            color: AppColors.green,
-            size: 22,
-          ),
-          SizedBox(width: AppResponsive.value(context, 5)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: AppColors.darkGreen,
-                      fontSize: AppResponsive.font(context, 9),
-                    ),
-                    children: [
-                      const TextSpan(
-                        text: 'Water ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(
-                        text: '${summary.consumedMl} / ${summary.goalMl} ml',
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: AppResponsive.value(context, 5)),
-                Row(
-                  children: List.generate(
-                    6,
-                    (index) => Expanded(
-                      child: Container(
-                        height: 6,
-                        margin: EdgeInsets.only(
-                          right: index == 5
-                              ? 0
-                              : AppResponsive.value(context, 3),
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              index < (summary.consumedMl / summary.goalMl * 6)
-                              ? AppColors.green
-                              : AppColors.borderGreen,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    return BlocBuilder<WaterBloc, WaterState>(
+      builder: (context, state) {
+        final consumedMl = state.water.consumedMl;
+        final goalMl = state.water.goalMl;
+        final progress = state.water.progress;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => context.pushNamed('water-tracker'),
+            borderRadius: BorderRadius.circular(
+              AppResponsive.value(context, 21),
             ),
-          ),
-          SizedBox(width: AppResponsive.value(context, 8)),
-          Container(
-            width: AppResponsive.value(context, 44),
-            height: AppResponsive.value(context, 44),
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: AppColors.green,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              '+250 ml',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: AppResponsive.font(context, 10),
-                fontWeight: FontWeight.w800,
+            child: Ink(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppResponsive.value(context, 12),
+                vertical: AppResponsive.value(context, 13),
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.softGreen,
+                borderRadius: BorderRadius.circular(
+                  AppResponsive.value(context, 21),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.water_drop_outlined,
+                    color: AppColors.green,
+                    size: 22,
+                  ),
+                  SizedBox(width: AppResponsive.value(context, 5)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: AppColors.darkGreen,
+                              fontSize: AppResponsive.font(context, 9),
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Water ',
+                                style: TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                              TextSpan(text: '$consumedMl / $goalMl ml'),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: AppResponsive.value(context, 5)),
+                        Row(
+                          children: List.generate(
+                            8,
+                            (index) => Expanded(
+                              child: Container(
+                                height: 6,
+                                margin: EdgeInsets.only(
+                                  right: index == 7
+                                      ? 0
+                                      : AppResponsive.value(context, 3),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: index < (progress * 8)
+                                      ? AppColors.green
+                                      : AppColors.borderGreen,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: AppResponsive.value(context, 8)),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        context.read<WaterBloc>().add(const WaterAdded(250));
+                        AppToast.show(
+                          context,
+                          message: 'Added 250 ml water',
+                          type: AppToastType.success,
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(100),
+                      child: Ink(
+                        width: AppResponsive.value(context, 44),
+                        height: AppResponsive.value(context, 44),
+                        decoration: const BoxDecoration(
+                          color: AppColors.green,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '+250 ml',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: AppResponsive.font(context, 10),
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
