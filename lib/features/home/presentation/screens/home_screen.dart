@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/theme/app_system_ui.dart';
+import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_overlay_scaffold.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../auth/presentation/bloc/auth_session_bloc.dart';
@@ -104,7 +105,10 @@ class _HomeScreenState extends State<HomeScreen>
                         context.read<HomeBloc>().add(HomeTabSelected(index));
                       }
                       if (index != 0 && index != 4) {
-                        _showComingSoon(context, _navigationItems[index].label);
+                        _showComingSoon(
+                          context,
+                          appNavigationItems[index].label,
+                        );
                       }
                     },
                   ),

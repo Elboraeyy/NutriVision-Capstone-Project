@@ -7,6 +7,9 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/screens/allergies_screen.dart';
 import '../../features/onboarding/presentation/screens/food_preferences_screen.dart';
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
+import '../../features/profile/presentation/screens/goals_dietary_screen.dart';
+import '../../features/profile/presentation/screens/notifications_settings_screen.dart';
+import '../../features/profile/presentation/screens/privacy_data_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
@@ -74,6 +77,30 @@ abstract final class AppRouter {
         name: 'profile',
         pageBuilder: (context, state) =>
             _onboardingPage(key: state.pageKey, child: const ProfileScreen()),
+      ),
+      GoRoute(
+        path: '/profile/notifications',
+        name: 'notifications-settings',
+        pageBuilder: (context, state) => _onboardingPage(
+          key: state.pageKey,
+          child: const NotificationsSettingsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profile/goals-dietary',
+        name: 'goals-dietary-preferences',
+        pageBuilder: (context, state) => _onboardingPage(
+          key: state.pageKey,
+          child: const GoalsDietaryScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/profile/privacy-data',
+        name: 'privacy-data-management',
+        pageBuilder: (context, state) => _onboardingPage(
+          key: state.pageKey,
+          child: const PrivacyDataScreen(),
+        ),
       ),
     ],
   );
