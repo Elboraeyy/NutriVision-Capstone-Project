@@ -150,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             children: [
                               AppTextField(
                                 label: 'Name',
-                                hintText: 'Mohamed',
+                                hintText: 'Enter your name',
                                 controller: _nameController,
                                 suffixIcon: const Icon(
                                   Icons.person_outline,
@@ -161,7 +161,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               SizedBox(height: AppResponsive.value(context, 2)),
                               AppTextField(
                                 label: 'Email',
-                                hintText: 'mohamed@example.com',
+                                hintText: 'Enter your email',
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 suffixIcon: const Icon(
