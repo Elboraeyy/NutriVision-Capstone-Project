@@ -18,6 +18,7 @@ abstract final class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'PlusJakartaSans',
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.cream,
       splashFactory: InkSparkle.splashFactory,
