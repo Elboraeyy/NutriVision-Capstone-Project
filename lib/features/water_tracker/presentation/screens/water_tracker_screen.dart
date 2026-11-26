@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/theme/app_system_ui.dart';
+import '../../../../core/widgets/app_floating_navigation_bar.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../bloc/water_bloc.dart';
 import '../widgets/custom_water_input_section.dart';
@@ -110,12 +111,32 @@ class WaterTrackerScreen extends StatelessWidget {
                     left: AppResponsive.value(context, 14),
                     right: AppResponsive.value(context, 14),
                     bottom: AppResponsive.value(context, 8),
-                    child: _WaterTrackerBottomNavigation(
-                      onHomeTap: () {
-                        if (Navigator.of(context).canPop()) {
-                          context.pop();
-                        } else {
-                          context.goNamed('home');
+                    child: AppFloatingNavigationBar(
+                      selectedIndex: 0,
+                      onSelected: (index) {
+                        switch (index) {
+                          case 0:
+                            if (Navigator.of(context).canPop()) {
+                              context.pop();
+                            } else {
+                              context.goNamed('home');
+                            }
+                          case 1:
+                            AppToast.show(
+                              context,
+                              message: 'Meal Plan will be connected soon.',
+                              type: AppToastType.info,
+                            );
+                          case 2:
+                            context.pushNamed('recipe-details');
+                          case 3:
+                            AppToast.show(
+                              context,
+                              message: 'Progress will be connected soon.',
+                              type: AppToastType.info,
+                            );
+                          case 4:
+                            context.pushNamed('profile');
                         }
                       },
                     ),
@@ -230,145 +251,6 @@ class _WaterTrackerHeader extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _WaterTrackerBottomNavigation extends StatelessWidget {
-  const _WaterTrackerBottomNavigation({required this.onHomeTap});
-
-  final VoidCallback onHomeTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: AppResponsive.value(context, 64),
-      padding: EdgeInsets.symmetric(
-        horizontal: AppResponsive.value(context, 6),
-        vertical: AppResponsive.value(context, 4),
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkGreen.withValues(alpha: .14),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _BottomNavItem(
-              label: 'Home',
-              icon: Icons.home_rounded,
-              selected: true,
-              onTap: onHomeTap,
-            ),
-          ),
-          Expanded(
-            child: _BottomNavItem(
-              label: 'Meal Plan',
-              icon: Icons.calendar_today_outlined,
-              selected: false,
-              onTap: () => AppToast.show(
-                context,
-                message: 'Meal Plan will be connected soon.',
-                type: AppToastType.info,
-              ),
-            ),
-          ),
-          Expanded(
-            child: _BottomNavItem(
-              label: 'Discover',
-              icon: Icons.explore_outlined,
-              selected: false,
-              onTap: () => AppToast.show(
-                context,
-                message: 'Discover will be connected soon.',
-                type: AppToastType.info,
-              ),
-            ),
-          ),
-          Expanded(
-            child: _BottomNavItem(
-              label: 'Progress',
-              icon: Icons.insights_outlined,
-              selected: false,
-              onTap: () => AppToast.show(
-                context,
-                message: 'Progress will be connected soon.',
-                type: AppToastType.info,
-              ),
-            ),
-          ),
-          Expanded(
-            child: _BottomNavItem(
-              label: 'Profile',
-              icon: Icons.person_outline_rounded,
-              selected: false,
-              onTap: () => context.pushNamed('profile'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BottomNavItem extends StatelessWidget {
-  const _BottomNavItem({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(100),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppResponsive.value(context, selected ? 8 : 2),
-            vertical: AppResponsive.value(context, selected ? 6 : 2),
-          ),
-          decoration: BoxDecoration(
-            color: selected ? AppColors.green : Colors.transparent,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: selected ? Colors.white : AppColors.darkGreen,
-                size: AppResponsive.value(context, 18),
-              ),
-              SizedBox(height: AppResponsive.value(context, 1)),
-              Text(
-                label,
-                maxLines: 1,
-                style: TextStyle(
-                  color: selected ? Colors.white : AppColors.darkGreen,
-                  fontSize: AppResponsive.font(context, 8),
-                  fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

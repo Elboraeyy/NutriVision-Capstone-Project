@@ -1,164 +1,155 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
+import '../../../../core/theme/app_system_ui.dart';
+import '../../../../core/widgets/app_overlay_scaffold.dart';
 import '../../../../core/widgets/app_toast.dart';
 
-const Color _darkGreen = Color(0xFF285341);
-const Color _textGreen = Color(0xFF244438);
-const Color _cream = Color(0xFFF7F4EC);
-const Color _lightGreen = Color(0xFFEDF0E1);
-const Color _borderGreen = Color(0xFFB8CBA3);
-
 /// Meal review and portion adjustment screen for AI-detected or manual meals.
+///
+/// Refactored to align with NutriVision design language: AppColors, AppResponsive,
+/// rounded surfaces, AppOverlayScaffold, and cohesive typography.
 class MealScreen extends StatelessWidget {
   const MealScreen({super.key, this.onAddFood, this.onConfirm});
 
   final VoidCallback? onAddFood;
   final VoidCallback? onConfirm;
 
+  static const double _headerHeight = 165;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _cream,
-      body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            const _MealHeader(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(19, 20, 19, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _MealInfo(),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Foods & portions',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: _textGreen,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Correct detected foods and portions before saving.',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF718071)),
-                    ),
-                    const SizedBox(height: 10),
-                    const _FoodCard(name: 'Grilled chicken', amount: '100'),
-                    const SizedBox(height: 10),
-                    const _FoodCard(name: 'Cooked quinoa', amount: '150'),
-                    const SizedBox(height: 10),
-                    const _FoodCard(
-                      name: 'Avocado',
-                      amount: '40',
-                      warning: true,
-                    ),
-                    const SizedBox(height: 10),
-                    const _FoodCard(name: 'Mixed vegetables', amount: '80'),
-                    const SizedBox(height: 10),
-                    _AddFoodButton(
-                      onPressed:
-                          onAddFood ??
-                          () => AppToast.show(
-                            context,
-                            message:
-                                'Custom food search will be available soon.',
-                            type: AppToastType.info,
-                          ),
-                    ),
-                    const SizedBox(height: 17),
-                    const _PortionWarning(),
-                    const SizedBox(height: 17),
-                    const _MealNutritionCard(),
-                    const SizedBox(height: 18),
-                    const Text(
-                      'Nutrition values are estimates, not medical advice.',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF718071)),
-                    ),
-                    const SizedBox(height: 17),
-                    _ConfirmButton(
-                      onPressed:
-                          onConfirm ??
-                          () => AppToast.show(
-                            context,
-                            message: 'Meal saving will be connected soon.',
-                            type: AppToastType.info,
-                          ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Confirmed food updates Diary, Home and Progress together.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: Color(0xFF718071)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppSystemUi.greenHeader,
+      child: AppOverlayScaffold(
+        header: const _MealReviewHeader(headerHeight: _headerHeight),
+        body: _MealReviewContent(
+          headerHeight: _headerHeight,
+          onAddFood: onAddFood,
+          onConfirm: onConfirm,
         ),
       ),
     );
   }
 }
 
-class _MealHeader extends StatelessWidget {
-  const _MealHeader();
+class _MealReviewHeader extends StatelessWidget {
+  const _MealReviewHeader({required this.headerHeight});
+
+  final double headerHeight;
 
   @override
   Widget build(BuildContext context) {
+    final topInset = MediaQuery.paddingOf(context).top;
     return Container(
       width: double.infinity,
-      height: 220,
+      height: topInset + AppResponsive.value(context, headerHeight),
       padding: EdgeInsets.fromLTRB(
-        20,
-        MediaQuery.of(context).padding.top + 16,
-        20,
-        24,
+        AppResponsive.value(context, 20),
+        topInset + AppResponsive.value(context, 10),
+        AppResponsive.value(context, 20),
+        AppResponsive.value(context, 18),
       ),
-      decoration: const BoxDecoration(
-        color: _darkGreen,
+      decoration: BoxDecoration(
+        color: AppColors.green,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(48),
-          bottomRight: Radius.circular(48),
+          bottomLeft: Radius.circular(AppResponsive.value(context, 38)),
+          bottomRight: Radius.circular(AppResponsive.value(context, 38)),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => Navigator.maybePop(context),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.arrow_back, color: Colors.white, size: 21),
-                SizedBox(width: 10),
-                Text(
-                  'Back',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.maybePop(context),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppResponsive.value(context, 4),
+                      vertical: AppResponsive.value(context, 4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                          size: AppResponsive.value(context, 15),
+                        ),
+                        SizedBox(width: AppResponsive.value(context, 6)),
+                        Text(
+                          'Back',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppResponsive.font(context, 13),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppResponsive.value(context, 10),
+                  vertical: AppResponsive.value(context, 4),
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.softGreen.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.auto_awesome_rounded,
+                      color: AppColors.lime,
+                      size: AppResponsive.value(context, 13),
+                    ),
+                    SizedBox(width: AppResponsive.value(context, 4)),
+                    Text(
+                      'AI REVIEW',
+                      style: TextStyle(
+                        color: AppColors.lime,
+                        fontSize: AppResponsive.font(context, 10),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Make it your meal',
+              style: TextStyle(
+                fontSize: AppResponsive.font(context, 26),
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                height: 1.15,
+              ),
             ),
           ),
-          const SizedBox(height: 23),
-          const Text(
-            'Make it your meal',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 5),
-          const Text(
+          SizedBox(height: AppResponsive.value(context, 4)),
+          Text(
             'AI results & review · Not yet in your diary',
-            style: TextStyle(fontSize: 14, color: Color(0xFFD5E0D9)),
+            style: TextStyle(
+              fontSize: AppResponsive.font(context, 13),
+              color: AppColors.softGreen,
+            ),
           ),
         ],
       ),
@@ -166,128 +157,321 @@ class _MealHeader extends StatelessWidget {
   }
 }
 
-class _MealInfo extends StatelessWidget {
-  const _MealInfo();
+class _MealReviewContent extends StatelessWidget {
+  const _MealReviewContent({
+    required this.headerHeight,
+    required this.onAddFood,
+    required this.onConfirm,
+  });
+
+  final double headerHeight;
+  final VoidCallback? onAddFood;
+  final VoidCallback? onConfirm;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 73,
-              height: 73,
-              margin: const EdgeInsets.only(right: 12),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: _lightGreen,
-              ),
-              child: ClipOval(
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200',
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) =>
-                      const Icon(Icons.restaurant, size: 32, color: _darkGreen),
-                ),
-              ),
-            ),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Meal name',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF718071)),
+    final topPadding =
+        AppOverlayScaffold.contentTop(context, headerHeight) +
+        AppResponsive.value(context, 14);
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        AppResponsive.value(context, 18),
+        topPadding,
+        AppResponsive.value(context, 18),
+        AppResponsive.value(context, 32),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _MealInfoCard(),
+          SizedBox(height: AppResponsive.value(context, 18)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  'Foods & portions',
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 18),
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.darkGreen,
                   ),
-                  SizedBox(height: 6),
-                  _EditableBox(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Chicken & quinoa bowl',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: _textGreen,
-                            ),
-                          ),
-                        ),
-                        Icon(Icons.edit_outlined, size: 20, color: _darkGreen),
-                      ],
-                    ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppResponsive.value(context, 9),
+                  vertical: AppResponsive.value(context, 4),
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.softGreen,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  '4 items detected',
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 11),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.darkGreen,
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 17),
-        const Row(
-          children: [
-            Expanded(
-              child: _EditableBox(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Dinner',
-                        style: TextStyle(color: _textGreen, fontSize: 14),
-                      ),
-                    ),
-                    Icon(Icons.keyboard_arrow_down, color: _darkGreen),
-                  ],
                 ),
               ),
+            ],
+          ),
+          SizedBox(height: AppResponsive.value(context, 4)),
+          Text(
+            'Correct detected foods and portions before saving.',
+            style: TextStyle(
+              fontSize: AppResponsive.font(context, 12),
+              color: AppColors.mutedGreen,
             ),
-            SizedBox(width: 9),
-            Expanded(
-              child: _EditableBox(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Today · 6:30 PM',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: _textGreen, fontSize: 13),
-                      ),
-                    ),
-                    Icon(Icons.edit_outlined, size: 19, color: _darkGreen),
-                  ],
+          ),
+          SizedBox(height: AppResponsive.value(context, 12)),
+          const _FoodItemCard(name: 'Grilled chicken', amount: '100'),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          const _FoodItemCard(name: 'Cooked quinoa', amount: '150'),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          const _FoodItemCard(name: 'Avocado', amount: '40', warning: true),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          const _FoodItemCard(name: 'Mixed vegetables', amount: '80'),
+          SizedBox(height: AppResponsive.value(context, 12)),
+          _AddFoodButton(
+            onPressed:
+                onAddFood ??
+                () => AppToast.show(
+                  context,
+                  message: 'Custom food search will be available soon.',
+                  type: AppToastType.info,
                 ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 16)),
+          const _PortionWarningCard(),
+          SizedBox(height: AppResponsive.value(context, 16)),
+          const _MealNutritionBreakdown(),
+          SizedBox(height: AppResponsive.value(context, 14)),
+          Text(
+            'Nutrition values are estimates, not medical advice.',
+            style: TextStyle(
+              fontSize: AppResponsive.font(context, 11),
+              color: AppColors.mutedGreen,
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 18)),
+          _ConfirmSaveButton(
+            onPressed:
+                onConfirm ??
+                () => AppToast.show(
+                  context,
+                  message: 'Meal saving will be connected soon.',
+                  type: AppToastType.info,
+                ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          Center(
+            child: Text(
+              'Confirmed food updates Diary, Home and Progress together.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: AppResponsive.font(context, 11),
+                color: AppColors.mutedGreen,
               ),
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _EditableBox extends StatelessWidget {
-  const _EditableBox({required this.child});
-
-  final Widget child;
+class _MealInfoCard extends StatelessWidget {
+  const _MealInfoCard();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+      width: double.infinity,
+      padding: EdgeInsets.all(AppResponsive.value(context, 16)),
       decoration: BoxDecoration(
-        border: Border.all(color: _borderGreen),
-        borderRadius: BorderRadius.circular(17),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppResponsive.value(context, 22)),
+        border: Border.all(color: AppColors.softGreen, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.darkGreen.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      child: child,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  AppResponsive.value(context, 18),
+                ),
+                child: Image.network(
+                  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200',
+                  width: AppResponsive.value(context, 68),
+                  height: AppResponsive.value(context, 68),
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => Container(
+                    width: AppResponsive.value(context, 68),
+                    height: AppResponsive.value(context, 68),
+                    color: AppColors.softGreen,
+                    child: Icon(
+                      Icons.restaurant_rounded,
+                      size: AppResponsive.value(context, 30),
+                      color: AppColors.green,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: AppResponsive.value(context, 14)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Meal name',
+                      style: TextStyle(
+                        fontSize: AppResponsive.font(context, 11),
+                        color: AppColors.mutedGreen,
+                      ),
+                    ),
+                    SizedBox(height: AppResponsive.value(context, 4)),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppResponsive.value(context, 10),
+                        vertical: AppResponsive.value(context, 8),
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.cream,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.borderGreen),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Chicken & quinoa bowl',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: AppResponsive.font(context, 14),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.darkGreen,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: AppResponsive.value(context, 16),
+                            color: AppColors.darkGreen,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppResponsive.value(context, 12)),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppResponsive.value(context, 10),
+                    vertical: AppResponsive.value(context, 8),
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.cream,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.borderGreen),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.lunch_dining_rounded,
+                        size: AppResponsive.value(context, 15),
+                        color: AppColors.darkGreen,
+                      ),
+                      SizedBox(width: AppResponsive.value(context, 6)),
+                      Expanded(
+                        child: Text(
+                          'Dinner',
+                          style: TextStyle(
+                            color: AppColors.darkGreen,
+                            fontSize: AppResponsive.font(context, 13),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down,
+                        size: AppResponsive.value(context, 18),
+                        color: AppColors.darkGreen,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: AppResponsive.value(context, 8)),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppResponsive.value(context, 10),
+                    vertical: AppResponsive.value(context, 8),
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.cream,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.borderGreen),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: AppResponsive.value(context, 15),
+                        color: AppColors.darkGreen,
+                      ),
+                      SizedBox(width: AppResponsive.value(context, 6)),
+                      Expanded(
+                        child: Text(
+                          'Today · 6:30 PM',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.darkGreen,
+                            fontSize: AppResponsive.font(context, 12),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: AppResponsive.value(context, 15),
+                        color: AppColors.darkGreen,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _FoodCard extends StatelessWidget {
-  const _FoodCard({
+class _FoodItemCard extends StatelessWidget {
+  const _FoodItemCard({
     required this.name,
     required this.amount,
     this.warning = false,
@@ -300,103 +484,117 @@ class _FoodCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(13, 12, 13, 12),
+      padding: EdgeInsets.all(AppResponsive.value(context, 12)),
       decoration: BoxDecoration(
-        color: _lightGreen,
-        borderRadius: BorderRadius.circular(19),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppResponsive.value(context, 18)),
+        border: Border.all(
+          color: warning ? AppColors.yellow : AppColors.softGreen,
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.darkGreen.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Row(
             children: [
+              Container(
+                width: AppResponsive.value(context, 8),
+                height: AppResponsive.value(context, 8),
+                decoration: BoxDecoration(
+                  color: warning ? AppColors.yellow : AppColors.lime,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              SizedBox(width: AppResponsive.value(context, 8)),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 11,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _cream,
-                    border: Border.all(color: _borderGreen),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: _textGreen,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      const Icon(
-                        Icons.edit_outlined,
-                        color: _darkGreen,
-                        size: 19,
-                      ),
-                    ],
+                child: Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 14),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.darkGreen,
                   ),
                 ),
               ),
-              const SizedBox(width: 13),
-              const Icon(Icons.delete_outline, color: _darkGreen, size: 22),
-              const SizedBox(width: 8),
+              Icon(
+                Icons.edit_outlined,
+                color: AppColors.mutedGreen,
+                size: AppResponsive.value(context, 16),
+              ),
+              SizedBox(width: AppResponsive.value(context, 10)),
+              Icon(
+                Icons.delete_outline_rounded,
+                color: Colors.red.shade300,
+                size: AppResponsive.value(context, 18),
+              ),
             ],
           ),
-          const SizedBox(height: 9),
+          SizedBox(height: AppResponsive.value(context, 8)),
           Row(
             children: [
               Expanded(
                 child: Text(
                   warning ? 'Est. portion · check' : 'Est. portion',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF718071),
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 11),
+                    color: warning
+                        ? const Color(0xFF946200)
+                        : AppColors.mutedGreen,
+                    fontWeight: warning ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
               ),
               Container(
-                width: 77,
-                height: 44,
+                width: AppResponsive.value(context, 65),
+                height: AppResponsive.value(context, 34),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _cream,
-                  border: Border.all(color: _borderGreen),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.cream,
+                  border: Border.all(color: AppColors.borderGreen),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   amount,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: _textGreen,
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 14),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.darkGreen,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: AppResponsive.value(context, 6)),
               Container(
-                width: 68,
-                height: 44,
+                width: AppResponsive.value(context, 55),
+                height: AppResponsive.value(context, 34),
                 decoration: BoxDecoration(
-                  color: _cream,
-                  border: Border.all(color: _borderGreen),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.cream,
+                  border: Border.all(color: AppColors.borderGreen),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('g', style: TextStyle(color: _textGreen)),
-                    SizedBox(width: 7),
+                    Text(
+                      'g',
+                      style: TextStyle(
+                        fontSize: AppResponsive.font(context, 12),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.darkGreen,
+                      ),
+                    ),
                     Icon(
                       Icons.keyboard_arrow_down,
-                      size: 18,
-                      color: _darkGreen,
+                      size: AppResponsive.value(context, 15),
+                      color: AppColors.darkGreen,
                     ),
                   ],
                 ),
@@ -416,45 +614,49 @@ class _AddFoodButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 48),
-        foregroundColor: _darkGreen,
-        side: const BorderSide(color: _borderGreen),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      ),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.add, size: 21),
-          SizedBox(width: 8),
-          Text(
-            'Add a missed food',
-            style: TextStyle(fontWeight: FontWeight.w600),
+    return SizedBox(
+      width: double.infinity,
+      height: AppResponsive.value(context, 44),
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(Icons.add_rounded, size: AppResponsive.value(context, 18)),
+        label: Text(
+          'Add a missed food',
+          style: TextStyle(
+            fontSize: AppResponsive.font(context, 13),
+            fontWeight: FontWeight.w600,
           ),
-        ],
+        ),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.darkGreen,
+          side: const BorderSide(color: AppColors.borderGreen),
+          shape: const StadiumBorder(),
+        ),
       ),
     );
   }
 }
 
-class _PortionWarning extends StatelessWidget {
-  const _PortionWarning();
+class _PortionWarningCard extends StatelessWidget {
+  const _PortionWarningCard();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: EdgeInsets.all(AppResponsive.value(context, 12)),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4E8B6),
-        borderRadius: BorderRadius.circular(17),
+        color: AppColors.yellow,
+        borderRadius: BorderRadius.circular(AppResponsive.value(context, 16)),
       ),
-      child: const Row(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline, color: _darkGreen, size: 21),
-          SizedBox(width: 11),
+          Icon(
+            Icons.warning_amber_rounded,
+            color: AppColors.darkGreen,
+            size: AppResponsive.value(context, 20),
+          ),
+          SizedBox(width: AppResponsive.value(context, 10)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -462,15 +664,18 @@ class _PortionWarning extends StatelessWidget {
                 Text(
                   'Avocado portion may need checking',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppResponsive.font(context, 13),
                     fontWeight: FontWeight.w700,
-                    color: _textGreen,
+                    color: AppColors.darkGreen,
                   ),
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: AppResponsive.value(context, 3)),
                 Text(
                   'Check the amount before saving.',
-                  style: TextStyle(fontSize: 13, color: _textGreen),
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 12),
+                    color: AppColors.darkGreen,
+                  ),
                 ),
               ],
             ),
@@ -481,18 +686,18 @@ class _PortionWarning extends StatelessWidget {
   }
 }
 
-class _MealNutritionCard extends StatelessWidget {
-  const _MealNutritionCard();
+class _MealNutritionBreakdown extends StatelessWidget {
+  const _MealNutritionBreakdown();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: EdgeInsets.all(AppResponsive.value(context, 15)),
       decoration: BoxDecoration(
-        color: _lightGreen,
-        borderRadius: BorderRadius.circular(32),
+        color: AppColors.softGreen,
+        borderRadius: BorderRadius.circular(AppResponsive.value(context, 22)),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Row(
             children: [
@@ -500,54 +705,58 @@ class _MealNutritionCard extends StatelessWidget {
                 child: Text(
                   'Estimated nutrition',
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: _textGreen,
+                    fontSize: AppResponsive.font(context, 15),
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.darkGreen,
                   ),
                 ),
               ),
               Text(
                 '520',
                 style: TextStyle(
-                  fontSize: 31,
-                  fontWeight: FontWeight.w700,
-                  color: _darkGreen,
+                  fontSize: AppResponsive.font(context, 28),
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.darkGreen,
+                  height: 1,
                 ),
               ),
-              SizedBox(width: 4),
+              SizedBox(width: AppResponsive.value(context, 4)),
               Padding(
-                padding: EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   'kcal',
-                  style: TextStyle(fontSize: 12, color: _textGreen),
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 11),
+                    color: AppColors.mutedGreen,
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10),
+          SizedBox(height: AppResponsive.value(context, 12)),
           Row(
-            children: [
+            children: const [
               Expanded(
-                child: _MacroItem(
-                  title: 'Protein',
+                child: _ReviewMacroPill(
+                  label: 'Protein',
                   amount: '40 g',
-                  color: Color(0xFFE1E8D3),
+                  color: AppColors.cream,
                 ),
               ),
               SizedBox(width: 8),
               Expanded(
-                child: _MacroItem(
-                  title: 'Carbs',
+                child: _ReviewMacroPill(
+                  label: 'Carbs',
                   amount: '54 g',
-                  color: Color(0xFFF5E8B7),
+                  color: AppColors.yellow,
                 ),
               ),
               SizedBox(width: 8),
               Expanded(
-                child: _MacroItem(
-                  title: 'Fat',
+                child: _ReviewMacroPill(
+                  label: 'Fat',
                   amount: '16 g',
-                  color: Color(0xFFF3D8C9),
+                  color: AppColors.peach,
                 ),
               ),
             ],
@@ -558,40 +767,49 @@ class _MealNutritionCard extends StatelessWidget {
   }
 }
 
-class _MacroItem extends StatelessWidget {
-  const _MacroItem({
-    required this.title,
+class _ReviewMacroPill extends StatelessWidget {
+  const _ReviewMacroPill({
+    required this.label,
     required this.amount,
     required this.color,
   });
 
-  final String title;
+  final String label;
   final String amount;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppResponsive.value(context, 8),
+        vertical: AppResponsive.value(context, 10),
+      ),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(AppResponsive.value(context, 14)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(title, style: const TextStyle(fontSize: 12, color: _textGreen)),
-          const SizedBox(height: 5),
           FittedBox(
             fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
             child: Text(
               amount,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: _textGreen,
+              style: TextStyle(
+                fontSize: AppResponsive.font(context, 15),
+                fontWeight: FontWeight.w800,
+                color: AppColors.darkGreen,
               ),
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 2)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppResponsive.font(context, 10),
+              fontWeight: FontWeight.w600,
+              color: AppColors.darkGreen,
             ),
           ),
         ],
@@ -600,8 +818,8 @@ class _MacroItem extends StatelessWidget {
   }
 }
 
-class _ConfirmButton extends StatelessWidget {
-  const _ConfirmButton({required this.onPressed});
+class _ConfirmSaveButton extends StatelessWidget {
+  const _ConfirmSaveButton({required this.onPressed});
 
   final VoidCallback onPressed;
 
@@ -609,34 +827,41 @@ class _ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 55,
+      height: AppResponsive.value(context, 50),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _darkGreen,
-          foregroundColor: const Color(0xFFC5E34F),
+          backgroundColor: AppColors.green,
+          foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 21),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppResponsive.value(context, 18),
           ),
+          shape: const StadiumBorder(),
         ),
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text(
                 'Confirm & save',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: AppResponsive.font(context, 15),
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             Container(
-              width: 39,
-              height: 39,
+              width: AppResponsive.value(context, 32),
+              height: AppResponsive.value(context, 32),
               decoration: const BoxDecoration(
-                color: Color(0xFFC5E34F),
+                color: AppColors.lime,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check, color: _darkGreen, size: 25),
+              child: Icon(
+                Icons.check_rounded,
+                color: AppColors.darkGreen,
+                size: AppResponsive.value(context, 20),
+              ),
             ),
           ],
         ),

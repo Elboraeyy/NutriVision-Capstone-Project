@@ -1,226 +1,344 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_responsive.dart';
+import '../../../../core/theme/app_system_ui.dart';
+import '../../../../core/widgets/app_overlay_scaffold.dart';
+
 /// Progress screen shown while an uploaded or captured meal photo is analyzed.
+///
+/// Refactored to align with NutriVision design language: AppColors, AppResponsive,
+/// rounded card surfaces, AppOverlayScaffold, and cohesive typography.
 class AnalyzingMealScreen extends StatelessWidget {
   const AnalyzingMealScreen({super.key, this.onCancel, this.onContinue});
 
   final VoidCallback? onCancel;
   final VoidCallback? onContinue;
 
-  static const Color _darkGreen = Color(0xFF285542);
-  static const Color _background = Color(0xFFF7F4EC);
-  static const Color _textGreen = Color(0xFF244637);
-  static const Color _lightGreen = Color(0xFFEEF0E1);
+  static const double _headerHeight = 165;
 
   @override
   Widget build(BuildContext context) {
     final handleCancel = onCancel ?? () => Navigator.maybePop(context);
 
-    return Scaffold(
-      backgroundColor: _background,
-      body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
-              decoration: const BoxDecoration(
-                color: _darkGreen,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(65),
-                  bottomRight: Radius.circular(65),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 38),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: handleCancel,
-                    child: const Row(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppSystemUi.greenHeader,
+      child: AppOverlayScaffold(
+        header: _AnalyzingHeader(
+          headerHeight: _headerHeight,
+          onCancel: handleCancel,
+        ),
+        body: _AnalyzingContent(
+          headerHeight: _headerHeight,
+          onContinue: onContinue,
+          onCancel: handleCancel,
+        ),
+      ),
+    );
+  }
+}
+
+class _AnalyzingHeader extends StatelessWidget {
+  const _AnalyzingHeader({required this.headerHeight, required this.onCancel});
+
+  final double headerHeight;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final topInset = MediaQuery.paddingOf(context).top;
+    return Container(
+      width: double.infinity,
+      height: topInset + AppResponsive.value(context, headerHeight),
+      padding: EdgeInsets.fromLTRB(
+        AppResponsive.value(context, 20),
+        topInset + AppResponsive.value(context, 10),
+        AppResponsive.value(context, 20),
+        AppResponsive.value(context, 18),
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.green,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(AppResponsive.value(context, 38)),
+          bottomRight: Radius.circular(AppResponsive.value(context, 38)),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onCancel,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppResponsive.value(context, 4),
+                      vertical: AppResponsive.value(context, 4),
+                    ),
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.arrow_back, color: Colors.white),
-                        SizedBox(width: 16),
+                        Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                          size: AppResponsive.value(context, 15),
+                        ),
+                        SizedBox(width: AppResponsive.value(context, 6)),
                         Text(
                           'Back',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: AppResponsive.font(context, 13),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 26),
-                  const Text(
-                    'A closer look',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Getting to know your meal.',
-                    style: TextStyle(color: Color(0xFFD7E2D9), fontSize: 16),
-                  ),
-                ],
+                ),
               ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
-                child: Column(
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppResponsive.value(context, 10),
+                  vertical: AppResponsive.value(context, 4),
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.softGreen.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1547592180-85f173990554'
-                        '?auto=format&fit=crop&w=900&q=85',
-                        width: double.infinity,
-                        height: 300,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) {
-                          return Container(
-                            height: 300,
-                            color: _lightGreen,
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              Icons.restaurant,
-                              size: 60,
-                              color: _darkGreen,
-                            ),
-                          );
-                        },
-                      ),
+                    Icon(
+                      Icons.auto_awesome_rounded,
+                      color: AppColors.lime,
+                      size: AppResponsive.value(context, 13),
                     ),
-                    const SizedBox(height: 26),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: _lightGreen,
-                        borderRadius: BorderRadius.circular(40),
+                    SizedBox(width: AppResponsive.value(context, 4)),
+                    Text(
+                      'AI VISION',
+                      style: TextStyle(
+                        color: AppColors.lime,
+                        fontSize: AppResponsive.font(context, 10),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
                       ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 38,
-                                height: 38,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    _darkGreen,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  'Analyzing your photo...',
-                                  style: TextStyle(
-                                    color: _textGreen,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 22),
-                          Text(
-                            'Identifying foods and estimating portions. '
-                            'You can adjust the details next.',
-                            style: TextStyle(
-                              color: Color(0xFF788273),
-                              fontSize: 16,
-                              height: 1.6,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: FilledButton(
-                        onPressed:
-                            onContinue ??
-                            () => GoRouter.maybeOf(
-                              context,
-                            )?.pushNamed('meal-review'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _darkGreen,
-                          foregroundColor: const Color(0xFFC5E34F),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                        ),
-                        child: const Text(
-                          'Continue to review',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 62,
-                      child: OutlinedButton(
-                        onPressed: handleCancel,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: _darkGreen,
-                          side: const BorderSide(
-                            color: Color(0xFFB8C8A5),
-                            width: 1.5,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel analysis',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    const Text(
-                      'Nothing has been added to your diary.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xFF788273), fontSize: 14),
                     ),
                   ],
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              width: 145,
-              height: 5,
-              decoration: BoxDecoration(
-                color: _textGreen,
-                borderRadius: BorderRadius.circular(10),
+            ],
+          ),
+          SizedBox(height: AppResponsive.value(context, 10)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'A closer look',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: AppResponsive.font(context, 26),
+                fontWeight: FontWeight.w800,
+                height: 1.15,
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 4)),
+          Text(
+            'Getting to know your meal.',
+            style: TextStyle(
+              color: AppColors.softGreen,
+              fontSize: AppResponsive.font(context, 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnalyzingContent extends StatelessWidget {
+  const _AnalyzingContent({
+    required this.headerHeight,
+    required this.onContinue,
+    required this.onCancel,
+  });
+
+  final double headerHeight;
+  final VoidCallback? onContinue;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final topPadding =
+        AppOverlayScaffold.contentTop(context, headerHeight) +
+        AppResponsive.value(context, 14);
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        AppResponsive.value(context, 18),
+        topPadding,
+        AppResponsive.value(context, 18),
+        AppResponsive.value(context, 32),
+      ),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                AppResponsive.value(context, 24),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.darkGreen.withValues(alpha: 0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                AppResponsive.value(context, 24),
+              ),
+              child: Image.network(
+                'https://images.unsplash.com/photo-1547592180-85f173990554'
+                '?auto=format&fit=crop&w=900&q=85',
+                width: double.infinity,
+                height: AppResponsive.value(context, 260),
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) {
+                  return Container(
+                    height: AppResponsive.value(context, 260),
+                    color: AppColors.softGreen,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.restaurant_rounded,
+                      size: AppResponsive.value(context, 54),
+                      color: AppColors.green,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 18)),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppResponsive.value(context, 18)),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(
+                AppResponsive.value(context, 22),
+              ),
+              border: Border.all(color: AppColors.softGreen, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.darkGreen.withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: AppResponsive.value(context, 32),
+                      height: AppResponsive.value(context, 32),
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.green,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: AppResponsive.value(context, 14)),
+                    Expanded(
+                      child: Text(
+                        'Analyzing your photo...',
+                        style: TextStyle(
+                          color: AppColors.darkGreen,
+                          fontSize: AppResponsive.font(context, 18),
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppResponsive.value(context, 12)),
+                Text(
+                  'Identifying foods and estimating portions. '
+                  'You can adjust the details next.',
+                  style: TextStyle(
+                    color: AppColors.mutedGreen,
+                    fontSize: AppResponsive.font(context, 13),
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 22)),
+          SizedBox(
+            width: double.infinity,
+            height: AppResponsive.value(context, 48),
+            child: ElevatedButton(
+              onPressed:
+                  onContinue ??
+                  () => GoRouter.maybeOf(context)?.pushNamed('meal-review'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.green,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: const StadiumBorder(),
+              ),
+              child: Text(
+                'Continue to review',
+                style: TextStyle(
+                  fontSize: AppResponsive.font(context, 14),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 12)),
+          SizedBox(
+            width: double.infinity,
+            height: AppResponsive.value(context, 46),
+            child: OutlinedButton(
+              onPressed: onCancel,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.darkGreen,
+                side: const BorderSide(color: AppColors.borderGreen),
+                shape: const StadiumBorder(),
+              ),
+              child: Text(
+                'Cancel analysis',
+                style: TextStyle(
+                  fontSize: AppResponsive.font(context, 13),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: AppResponsive.value(context, 16)),
+          Text(
+            'Nothing has been added to your diary.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.mutedGreen,
+              fontSize: AppResponsive.font(context, 12),
+            ),
+          ),
+        ],
       ),
     );
   }
