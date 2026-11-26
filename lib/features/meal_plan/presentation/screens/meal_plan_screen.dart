@@ -35,6 +35,8 @@ class MealPlanScreen extends StatelessWidget {
       builder: (context, state) {
         final plan = state.activePlan;
         final selectedDate = state.selectedDate;
+        final headerHeight = AppOverlayScaffold.contentTop(context, 155);
+        final overlap = AppResponsive.value(context, 40);
 
         return AppOverlayScaffold(
           header: MealPlanHeader(
@@ -61,15 +63,16 @@ class MealPlanScreen extends StatelessWidget {
                   ),
                 )
               : SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppResponsive.value(context, 20),
-                    vertical: AppResponsive.value(context, 16),
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    AppResponsive.value(context, 20),
+                    headerHeight + AppResponsive.value(context, 215),
+                    AppResponsive.value(context, 20),
+                    AppResponsive.value(context, 110),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PlannedNutritionCard(nutrition: plan.nutrition),
-                      SizedBox(height: AppResponsive.value(context, 24)),
                       // Section header: Day's meals + Edit plan
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,36 +160,44 @@ class MealPlanScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: AppResponsive.value(context, 110)),
                     ],
                   ),
                 ),
-          foreground: Positioned(
-            left: AppResponsive.value(context, 14),
-            right: AppResponsive.value(context, 14),
-            bottom: AppResponsive.value(context, 8),
-            child: AppFloatingNavigationBar(
-              selectedIndex: 1,
-              onSelected: (index) {
-                switch (index) {
-                  case 0:
-                    context.go('/home');
-                    break;
-                  case 1:
-                    break;
-                  case 2:
-                    context.go('/discover');
-                    break;
-                  case 3:
-                    context.go('/water-tracker');
-                    break;
-                  case 4:
-                    context.go('/profile');
-                    break;
-                }
-              },
+          foregrounds: [
+            if (plan != null)
+              Positioned(
+                top: headerHeight - overlap,
+                left: AppResponsive.value(context, 20),
+                right: AppResponsive.value(context, 20),
+                child: PlannedNutritionCard(nutrition: plan.nutrition),
+              ),
+            Positioned(
+              left: AppResponsive.value(context, 14),
+              right: AppResponsive.value(context, 14),
+              bottom: AppResponsive.value(context, 8),
+              child: AppFloatingNavigationBar(
+                selectedIndex: 1,
+                onSelected: (index) {
+                  switch (index) {
+                    case 0:
+                      context.go('/home');
+                      break;
+                    case 1:
+                      break;
+                    case 2:
+                      context.go('/discover');
+                      break;
+                    case 3:
+                      context.go('/water-tracker');
+                      break;
+                    case 4:
+                      context.go('/profile');
+                      break;
+                  }
+                },
+              ),
             ),
-          ),
+          ],
         );
       },
     );

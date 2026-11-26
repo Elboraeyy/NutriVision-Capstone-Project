@@ -39,6 +39,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
     return BlocBuilder<RecommendationsBloc, RecommendationsState>(
       builder: (context, state) {
         final matches = state.filteredRecipes;
+        final headerHeight = AppOverlayScaffold.contentTop(context, 140);
 
         return AppOverlayScaffold(
           header: DiscoverHeader(
@@ -49,9 +50,12 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
             onSavedTap: () => context.pushNamed('saved-recipes'),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppResponsive.value(context, 20),
-              vertical: AppResponsive.value(context, 16),
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              AppResponsive.value(context, 20),
+              headerHeight + AppResponsive.value(context, 14),
+              AppResponsive.value(context, 20),
+              AppResponsive.value(context, 32),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

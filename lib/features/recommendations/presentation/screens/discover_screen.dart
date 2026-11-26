@@ -21,6 +21,9 @@ class DiscoverScreen extends StatelessWidget {
         final everydayRecipes = state.recipes
             .where((r) => r.id != featured?.id)
             .toList();
+        final headerHeight = AppOverlayScaffold.contentTop(context, 140);
+        final searchBarHeight = AppResponsive.value(context, 48);
+        final overlap = AppResponsive.value(context, 24);
 
         return AppOverlayScaffold(
           header: DiscoverHeader(
@@ -30,19 +33,19 @@ class DiscoverScreen extends StatelessWidget {
             onSavedTap: () => context.pushNamed('saved-recipes'),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppResponsive.value(context, 20),
-              vertical: AppResponsive.value(context, 16),
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              AppResponsive.value(context, 20),
+              headerHeight +
+                  searchBarHeight -
+                  overlap +
+                  AppResponsive.value(context, 14),
+              AppResponsive.value(context, 20),
+              AppResponsive.value(context, 100),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DiscoverSearchBar(
-                  readOnly: true,
-                  onTap: () => context.pushNamed('recipe-search'),
-                  onFilterTap: () => context.pushNamed('recipe-search'),
-                ),
-                SizedBox(height: AppResponsive.value(context, 14)),
                 const PreferenceNotice(),
                 SizedBox(height: AppResponsive.value(context, 22)),
                 if (featured != null) ...[
@@ -83,37 +86,32 @@ class DiscoverScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: AppResponsive.value(context, 12)),
-                  ...everydayRecipes.map(
-                    (recipe) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: AppResponsive.value(context, 12),
-                      ),
-                      child: EverydayRecipeCard(
-                        recipe: recipe,
-                        onTap: () {
-                          context.read<RecommendationsBloc>().add(
-                            RecipeDetailsRequested(recipe.id),
-                          );
-                          context.pushNamed(
-                            'recipe-details',
-                            pathParameters: {'id': recipe.id},
-                          );
-                        },
-                        onSaveTap: () {
-                          context.read<RecommendationsBloc>().add(
-                            RecipeSaveToggled(recipe.id),
-                          );
-                          AppToast.show(
-                            context,
-                            message: recipe.isSaved
-                                ? 'Removed from saved recipes'
-                                : 'Saved to favorites',
-                            type: AppToastType.success,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  ...everydayRecipes.map((recipe) {
+                    return EverydayRecipeCard(
+                      recipe: recipe,
+                      onTap: () {
+                        context.read<RecommendationsBloc>().add(
+                          RecipeDetailsRequested(recipe.id),
+                        );
+                        context.pushNamed(
+                          'recipe-details',
+                          pathParameters: {'id': recipe.id},
+                        );
+                      },
+                      onSaveTap: () {
+                        context.read<RecommendationsBloc>().add(
+                          RecipeSaveToggled(recipe.id),
+                        );
+                        AppToast.show(
+                          context,
+                          message: recipe.isSaved
+                              ? 'Removed from saved recipes'
+                              : 'Saved to favorites',
+                          type: AppToastType.success,
+                        );
+                      },
+                    );
+                  }),
                   SizedBox(height: AppResponsive.value(context, 16)),
                 ],
                 ChatWithAiBanner(
@@ -126,36 +124,48 @@ class DiscoverScreen extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(height: AppResponsive.value(context, 100)),
+                SizedBox(height: AppResponsive.value(context, 32)),
               ],
             ),
           ),
-          foreground: Positioned(
-            left: AppResponsive.value(context, 14),
-            right: AppResponsive.value(context, 14),
-            bottom: AppResponsive.value(context, 8),
-            child: AppFloatingNavigationBar(
-              selectedIndex: 2,
-              onSelected: (index) {
-                switch (index) {
-                  case 0:
-                    context.go('/home');
-                    break;
-                  case 1:
-                    context.go('/meal-plan');
-                    break;
-                  case 2:
-                    break;
-                  case 3:
-                    context.go('/water-tracker');
-                    break;
-                  case 4:
-                    context.go('/profile');
-                    break;
-                }
-              },
+          foregrounds: [
+            Positioned(
+              top: headerHeight - overlap,
+              left: AppResponsive.value(context, 20),
+              right: AppResponsive.value(context, 20),
+              child: DiscoverSearchBar(
+                readOnly: true,
+                onTap: () => context.pushNamed('recipe-search'),
+                onFilterTap: () => context.pushNamed('recipe-search'),
+              ),
             ),
-          ),
+            Positioned(
+              left: AppResponsive.value(context, 14),
+              right: AppResponsive.value(context, 14),
+              bottom: AppResponsive.value(context, 8),
+              child: AppFloatingNavigationBar(
+                selectedIndex: 2,
+                onSelected: (index) {
+                  switch (index) {
+                    case 0:
+                      context.go('/home');
+                      break;
+                    case 1:
+                      context.go('/meal-plan');
+                      break;
+                    case 2:
+                      break;
+                    case 3:
+                      context.go('/water-tracker');
+                      break;
+                    case 4:
+                      context.go('/profile');
+                      break;
+                  }
+                },
+              ),
+            ),
+          ],
         );
       },
     );

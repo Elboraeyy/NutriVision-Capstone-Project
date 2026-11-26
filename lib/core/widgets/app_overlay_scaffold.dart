@@ -11,11 +11,13 @@ class AppOverlayScaffold extends StatelessWidget {
     required this.header,
     required this.body,
     this.foreground,
+    this.foregrounds,
   });
 
   final Widget header;
   final Widget body;
   final Widget? foreground;
+  final List<Widget>? foregrounds;
 
   static double contentTop(BuildContext context, double headerHeight) {
     return MediaQuery.paddingOf(context).top +
@@ -34,7 +36,8 @@ class AppOverlayScaffold extends StatelessWidget {
           children: [
             Positioned.fill(child: body),
             Positioned(top: 0, left: 0, right: 0, child: header),
-            ...?(foreground == null ? null : <Widget>[foreground!]),
+            ...?foregrounds,
+            if (foregrounds == null && foreground != null) foreground!,
           ],
         ),
       ),

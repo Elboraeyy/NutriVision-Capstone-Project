@@ -50,6 +50,7 @@ class _AiPlanGenerateScreenState extends State<AiPlanGenerateScreen> {
       },
       builder: (context, state) {
         final draft = state.draftPlan;
+        final headerHeight = AppOverlayScaffold.contentTop(context, 100);
 
         return AppOverlayScaffold(
           header: MealSubHeader(
@@ -58,9 +59,12 @@ class _AiPlanGenerateScreenState extends State<AiPlanGenerateScreen> {
             onBack: () => context.pop(),
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppResponsive.value(context, 20),
-              vertical: AppResponsive.value(context, 16),
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              AppResponsive.value(context, 20),
+              headerHeight + AppResponsive.value(context, 14),
+              AppResponsive.value(context, 20),
+              AppResponsive.value(context, 32),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

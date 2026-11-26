@@ -34,6 +34,8 @@ class EditMealPlanScreen extends StatelessWidget {
       },
       builder: (context, state) {
         final plan = state.activePlan;
+        final headerHeight = AppOverlayScaffold.contentTop(context, 120);
+        final overlap = AppResponsive.value(context, 30);
 
         return AppOverlayScaffold(
           header: MealSubHeader(
@@ -48,15 +50,16 @@ class EditMealPlanScreen extends StatelessWidget {
                   child: CircularProgressIndicator(color: AppColors.green),
                 )
               : SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppResponsive.value(context, 20),
-                    vertical: AppResponsive.value(context, 16),
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    AppResponsive.value(context, 20),
+                    headerHeight + AppResponsive.value(context, 215),
+                    AppResponsive.value(context, 20),
+                    AppResponsive.value(context, 32),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PlannedNutritionCard(nutrition: plan.nutrition),
-                      SizedBox(height: AppResponsive.value(context, 24)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -126,6 +129,15 @@ class EditMealPlanScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+          foregrounds: [
+            if (plan != null)
+              Positioned(
+                top: headerHeight - overlap,
+                left: AppResponsive.value(context, 20),
+                right: AppResponsive.value(context, 20),
+                child: PlannedNutritionCard(nutrition: plan.nutrition),
+              ),
+          ],
         );
       },
     );
