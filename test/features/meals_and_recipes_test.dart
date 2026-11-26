@@ -29,8 +29,14 @@ import 'package:nutrivision_capstone_project/features/recommendations/data/repos
 import 'package:nutrivision_capstone_project/features/recommendations/domain/repositories/recommendations_repository.dart';
 import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/get_recipe_details.dart';
 import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/get_recommended_recipes.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/get_saved_recipes.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/search_recipes.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/toggle_save_recipe.dart';
 import 'package:nutrivision_capstone_project/features/recommendations/presentation/bloc/recommendations_bloc.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/presentation/screens/discover_screen.dart';
 import 'package:nutrivision_capstone_project/features/recommendations/presentation/screens/recipe_details_screen.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/presentation/screens/recipe_search_screen.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/presentation/screens/saved_recipes_screen.dart';
 import 'package:nutrivision_capstone_project/features/water_tracker/data/datasources/water_local_data_source.dart';
 import 'package:nutrivision_capstone_project/features/water_tracker/data/repositories/water_repository_impl.dart';
 import 'package:nutrivision_capstone_project/features/water_tracker/domain/repositories/water_repository.dart';
@@ -101,6 +107,9 @@ Widget _buildRouterTestApp() {
             return RecommendationsBloc(
               getRecommendedRecipes: GetRecommendedRecipes(repository),
               getRecipeDetails: GetRecipeDetails(repository),
+              searchRecipes: SearchRecipes(repository),
+              toggleSaveRecipe: ToggleSaveRecipe(repository),
+              getSavedRecipes: GetSavedRecipes(repository),
             )..add(const RecommendationsStarted());
           },
         ),
@@ -187,6 +196,9 @@ void main() {
       final bloc = RecommendationsBloc(
         getRecommendedRecipes: GetRecommendedRecipes(repository),
         getRecipeDetails: GetRecipeDetails(repository),
+        searchRecipes: SearchRecipes(repository),
+        toggleSaveRecipe: ToggleSaveRecipe(repository),
+        getSavedRecipes: GetSavedRecipes(repository),
       );
       addTearDown(bloc.close);
 
@@ -198,6 +210,59 @@ void main() {
       expect(loaded.recipes, isNotEmpty);
       expect(loaded.selectedRecipe?.title, 'Lemon salmon & couscous');
     });
+
+    test('RecommendationsRepository searches and saves recipes', () async {
+      final repository = InMemoryRecommendationsRepository();
+      final all = await repository.getRecommendedRecipes();
+      expect(all, hasLength(3));
+
+      final salmonOnly = await repository.searchRecipes(query: 'salmon');
+      expect(salmonOnly, hasLength(1));
+      expect(salmonOnly.first.title, 'Lemon salmon & couscous');
+
+      final under400 = await repository.searchRecipes(maxCalories: 400);
+      expect(under400, hasLength(1));
+      expect(under400.first.id, 'sample-roasted-chickpea-crunch');
+
+      await repository.toggleSaveRecipe('sample-lemon-salmon-couscous');
+      final saved = await repository.getSavedRecipes();
+      expect(saved, hasLength(1));
+      expect(saved.first.title, 'Lemon salmon & couscous');
+    });
+
+    test(
+      'RecommendationsBloc supports searching and toggling bookmark',
+      () async {
+        final repository = InMemoryRecommendationsRepository();
+        final bloc = RecommendationsBloc(
+          getRecommendedRecipes: GetRecommendedRecipes(repository),
+          getRecipeDetails: GetRecipeDetails(repository),
+          searchRecipes: SearchRecipes(repository),
+          toggleSaveRecipe: ToggleSaveRecipe(repository),
+          getSavedRecipes: GetSavedRecipes(repository),
+        );
+        addTearDown(bloc.close);
+
+        bloc.add(const RecommendationsStarted());
+        await bloc.stream.firstWhere(
+          (s) => s.status == RecommendationsStatus.success,
+        );
+
+        bloc.add(const RecipeSearchChanged('quinoa'));
+        final searchState = await bloc.stream.firstWhere(
+          (s) => s.searchQuery == 'quinoa',
+        );
+        expect(searchState.filteredRecipes, hasLength(1));
+        expect(
+          searchState.filteredRecipes.first.title,
+          'Chicken & quinoa bowl',
+        );
+
+        bloc.add(const RecipeSaveToggled('sample-chicken-quinoa-bowl'));
+        await bloc.stream.firstWhere((s) => s.savedRecipes.isNotEmpty);
+        expect(bloc.state.savedRecipes.first.id, 'sample-chicken-quinoa-bowl');
+      },
+    );
   });
 
   group('Integrated meal and recipe screens', () {
@@ -337,6 +402,88 @@ void main() {
     await tester.ensureVisible(find.text('Discover'));
     await tester.tap(find.text('Discover'));
     await tester.pumpAndSettle();
-    expect(find.byType(RecipeDetailsScreen), findsOneWidget);
+    expect(find.byType(DiscoverScreen), findsOneWidget);
+  });
+
+  group('Discover and Search Screens', () {
+    testWidgets('DiscoverScreen renders featured recipe and everyday recipes', (
+      tester,
+    ) async {
+      _setPhoneViewport(tester);
+      final repo = InMemoryRecommendationsRepository();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: BlocProvider(
+            create: (_) => RecommendationsBloc(
+              getRecommendedRecipes: GetRecommendedRecipes(repo),
+              getRecipeDetails: GetRecipeDetails(repo),
+              searchRecipes: SearchRecipes(repo),
+              toggleSaveRecipe: ToggleSaveRecipe(repo),
+              getSavedRecipes: GetSavedRecipes(repo),
+            )..add(const RecommendationsStarted()),
+            child: const DiscoverScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('A little inspiration.'), findsOneWidget);
+      expect(find.text('You might like these Meals'), findsOneWidget);
+      expect(find.text('Lemon salmon & couscous'), findsOneWidget);
+      expect(find.text('Everyday recipes'), findsOneWidget);
+      expect(find.text('Chat with AI'), findsOneWidget);
+    });
+
+    testWidgets('RecipeSearchScreen renders search inputs and filters', (
+      tester,
+    ) async {
+      _setPhoneViewport(tester);
+      final repo = InMemoryRecommendationsRepository();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: BlocProvider(
+            create: (_) => RecommendationsBloc(
+              getRecommendedRecipes: GetRecommendedRecipes(repo),
+              getRecipeDetails: GetRecipeDetails(repo),
+              searchRecipes: SearchRecipes(repo),
+              toggleSaveRecipe: ToggleSaveRecipe(repo),
+              getSavedRecipes: GetSavedRecipes(repo),
+            )..add(const RecommendationsStarted()),
+            child: const RecipeSearchScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Find your next meal.'), findsOneWidget);
+      expect(find.text('Refine your recipes'), findsOneWidget);
+      expect(find.text('Ingredients you have'), findsOneWidget);
+    });
+
+    testWidgets(
+      'SavedRecipesScreen renders empty state when no saved recipes',
+      (tester) async {
+        _setPhoneViewport(tester);
+        final repo = InMemoryRecommendationsRepository();
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light,
+            home: BlocProvider(
+              create: (_) => RecommendationsBloc(
+                getRecommendedRecipes: GetRecommendedRecipes(repo),
+                getRecipeDetails: GetRecipeDetails(repo),
+                searchRecipes: SearchRecipes(repo),
+                toggleSaveRecipe: ToggleSaveRecipe(repo),
+                getSavedRecipes: GetSavedRecipes(repo),
+              )..add(const RecommendationsStarted()),
+              child: const SavedRecipesScreen(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Saved recipes'), findsOneWidget);
+        expect(find.text('No saved recipes yet'), findsOneWidget);
+      },
+    );
   });
 }

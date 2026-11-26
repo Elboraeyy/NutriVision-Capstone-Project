@@ -30,7 +30,11 @@ class RecipeDetailsScreen extends StatelessWidget {
           type: AppToastType.info,
         );
       case 2:
-        break;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.goNamed('discover');
+        }
       case 3:
         AppToast.show(
           context,

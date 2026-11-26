@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
                     onTabSelected: (index) {
                       if (index == 2) {
                         context.read<HomeBloc>().add(const HomeTabSelected(0));
-                        context.pushNamed('recipe-details');
+                        context.pushNamed('discover');
                       } else if (index == 4) {
                         context.read<HomeBloc>().add(const HomeTabSelected(0));
                         context.pushNamed('profile');

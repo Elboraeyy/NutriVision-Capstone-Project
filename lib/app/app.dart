@@ -29,6 +29,9 @@ import '../features/recommendations/data/repositories/in_memory_recommendations_
 import '../features/recommendations/domain/repositories/recommendations_repository.dart';
 import '../features/recommendations/domain/usecases/get_recipe_details.dart';
 import '../features/recommendations/domain/usecases/get_recommended_recipes.dart';
+import '../features/recommendations/domain/usecases/get_saved_recipes.dart';
+import '../features/recommendations/domain/usecases/search_recipes.dart';
+import '../features/recommendations/domain/usecases/toggle_save_recipe.dart';
 import '../features/recommendations/presentation/bloc/recommendations_bloc.dart';
 import '../features/water_tracker/data/datasources/water_local_data_source.dart';
 import '../features/water_tracker/data/repositories/water_repository_impl.dart';
@@ -122,6 +125,9 @@ class NutriVisionApp extends StatelessWidget {
               return RecommendationsBloc(
                 getRecommendedRecipes: GetRecommendedRecipes(repository),
                 getRecipeDetails: GetRecipeDetails(repository),
+                searchRecipes: SearchRecipes(repository),
+                toggleSaveRecipe: ToggleSaveRecipe(repository),
+                getSavedRecipes: GetSavedRecipes(repository),
               )..add(const RecommendationsStarted());
             },
           ),

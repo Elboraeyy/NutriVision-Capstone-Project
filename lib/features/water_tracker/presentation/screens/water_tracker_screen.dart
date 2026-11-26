@@ -128,7 +128,7 @@ class WaterTrackerScreen extends StatelessWidget {
                               type: AppToastType.info,
                             );
                           case 2:
-                            context.pushNamed('recipe-details');
+                            context.pushNamed('discover');
                           case 3:
                             AppToast.show(
                               context,

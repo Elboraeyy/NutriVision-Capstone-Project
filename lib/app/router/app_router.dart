@@ -12,7 +12,10 @@ import '../../features/onboarding/presentation/screens/allergies_screen.dart';
 import '../../features/onboarding/presentation/screens/food_preferences_screen.dart';
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/recommendations/presentation/screens/discover_screen.dart';
 import '../../features/recommendations/presentation/screens/recipe_details_screen.dart';
+import '../../features/recommendations/presentation/screens/recipe_search_screen.dart';
+import '../../features/recommendations/presentation/screens/saved_recipes_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/water_tracker/presentation/screens/water_tracker_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
@@ -110,6 +113,21 @@ abstract final class AppRouter {
         path: '/recommendations/recipe',
         name: 'recipe-details',
         builder: (context, state) => const RecipeDetailsScreen(),
+      ),
+      GoRoute(
+        path: '/discover',
+        name: 'discover',
+        builder: (context, state) => const DiscoverScreen(),
+      ),
+      GoRoute(
+        path: '/discover/search',
+        name: 'recipe-search',
+        builder: (context, state) => const RecipeSearchScreen(),
+      ),
+      GoRoute(
+        path: '/discover/saved',
+        name: 'saved-recipes',
+        builder: (context, state) => const SavedRecipesScreen(),
       ),
     ],
   );
