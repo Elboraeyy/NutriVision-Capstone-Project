@@ -1,0 +1,170 @@
+name: Build & Release (APK & IPA)
+
+on:
+  push:
+    branches:
+      - main
+      - elboraey
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: '3.41.9'
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify Dart code
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Android Release APK
+        run: flutter build apk --release
+
+      - name: Prepare APK artifact
+        run: |
+          mkdir -p build_output
+          cp build/app/outputs/flutter-apk/app-release.apk "build_output/NutriVision-v1.0.${{ github.run_number }}.apk"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrivision-apk
+          path: build_output/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  build-ipa:
+    name: Build iOS IPA
+    runs-on: macos-latest
+    timeout-minutes: 35
+    env:
+      COCOAPODS_DISABLE_STATS: 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS app without signing
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          app_path="$(find "$GITHUB_WORKSPACE/build/ios/iphoneos" \
+            -maxdepth 1 -type d -name 'Runner.app' -print -quit)"
+
+          if [[ -z "$app_path" ]]; then
+            echo "Runner.app was not produced by the iOS build."
+            find "$GITHUB_WORKSPACE/build/ios" -maxdepth 4 -print
+            exit 1
+          fi
+
+          staging_dir="$RUNNER_TEMP/nutrivision-ipa"
+          rm -rf "$staging_dir"
+          mkdir -p "$staging_dir/Payload"
+          cp -R "$app_path" "$staging_dir/Payload/Runner.app"
+
+          mkdir -p build_output
+          ipa_path="$GITHUB_WORKSPACE/build_output/NutriVision-v1.0.${{ github.run_number }}-unsigned.ipa"
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$staging_dir/Payload" "$ipa_path"
+
+          unzip -t "$ipa_path"
+          unzip -l "$ipa_path" | grep -q 'Payload/Runner.app/Info.plist'
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrivision-ipa
+          path: build_output/*.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Create GitHub Release
+    needs: [build-apk, build-ipa]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: downloaded_artifacts
+
+      - name: Stage release assets
+        run: |
+          mkdir -p release_assets
+          cp downloaded_artifacts/nutrivision-apk/*.apk release_assets/
+          cp downloaded_artifacts/nutrivision-ipa/*.ipa release_assets/
+          cd release_assets
+          sha256sum * > SHA256SUMS.txt
+          echo "Release assets staged:"
+          ls -lh
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: NutriVision v1.0.${{ github.run_number }}
+          body: |
+            ## 🥗 NutriVision v1.0.${{ github.run_number }}
+
+            Automated release build from commit `${{ github.sha }}` on branch `${{ github.ref_name }}`.
+
+            ### 📦 Application Packages:
+            * **Android (APK):** `NutriVision-v1.0.${{ github.run_number }}.apk`
+            * **iOS (Unsigned IPA):** `NutriVision-v1.0.${{ github.run_number }}-unsigned.ipa`
+
+            ### 🔒 Verification:
+            See `SHA256SUMS.txt` attached to verify checksums.
+          files: |
+            release_assets/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
