@@ -113,7 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           AppTextField(
                             label: 'Email',
-                            hintText: 'mohamed@example.com',
+                            hintText: 'Enter your email',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             suffixIcon: const Icon(
