@@ -140,7 +140,9 @@ void main() {
     Widget wrapScreen(Widget child) {
       return BlocProvider<ProgressBloc>(
         create: (_) => ProgressBloc(
-          getProgressSnapshot: GetProgressSnapshot(InMemoryProgressRepository()),
+          getProgressSnapshot: GetProgressSnapshot(
+            InMemoryProgressRepository(),
+          ),
         )..add(const ProgressStarted()),
         child: MaterialApp(theme: AppTheme.light, home: child),
       );

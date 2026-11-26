@@ -14,6 +14,9 @@ import '../../features/meals/presentation/screens/meal_screen.dart';
 import '../../features/onboarding/presentation/screens/allergies_screen.dart';
 import '../../features/onboarding/presentation/screens/food_preferences_screen.dart';
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
+import '../../features/profile/presentation/screens/goals_preferences_screen.dart';
+import '../../features/profile/presentation/screens/notifications_settings_screen.dart';
+import '../../features/profile/presentation/screens/privacy_data_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/progress/presentation/screens/insights_screen.dart';
 import '../../features/progress/presentation/screens/progress_screen.dart';
@@ -88,6 +91,21 @@ abstract final class AppRouter {
         name: 'profile',
         pageBuilder: (context, state) =>
             _onboardingPage(key: state.pageKey, child: const ProfileScreen()),
+      ),
+      GoRoute(
+        path: '/profile/goals',
+        name: 'profile-goals',
+        builder: (context, state) => const GoalsPreferencesScreen(),
+      ),
+      GoRoute(
+        path: '/profile/notifications',
+        name: 'profile-notifications',
+        builder: (context, state) => const NotificationsSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/privacy',
+        name: 'profile-privacy',
+        builder: (context, state) => const PrivacyDataScreen(),
       ),
       GoRoute(
         path: '/water-tracker',

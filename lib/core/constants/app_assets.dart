@@ -7,4 +7,5 @@ abstract final class AppAssets {
   static const sprout = 'assets/images/welcome/sprout.svg';
   static const foodIllustration =
       'assets/images/welcome/food_illustration_hd.svg';
+  static const profileAvatar = 'assets/images/profile/maya_avatar.png';
 }

@@ -32,6 +32,15 @@ import '../features/onboarding/domain/repositories/onboarding_repository.dart';
 import '../features/onboarding/domain/usecases/complete_onboarding.dart';
 import '../features/onboarding/domain/usecases/save_onboarding_draft.dart';
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../features/profile/data/repositories/in_memory_profile_repository.dart';
+import '../features/profile/domain/repositories/profile_repository.dart';
+import '../features/profile/domain/usecases/delete_account_data.dart';
+import '../features/profile/domain/usecases/get_user_profile.dart';
+import '../features/profile/domain/usecases/request_data_export.dart';
+import '../features/profile/domain/usecases/update_goals_and_preferences.dart';
+import '../features/profile/domain/usecases/update_notification_preferences.dart';
+import '../features/profile/domain/usecases/update_privacy_preferences.dart';
+import '../features/profile/presentation/bloc/profile_bloc.dart';
 import '../features/progress/data/repositories/in_memory_progress_repository.dart';
 import '../features/progress/domain/repositories/progress_repository.dart';
 import '../features/progress/domain/usecases/get_progress_snapshot.dart';
@@ -87,6 +96,11 @@ class NutriVisionApp extends StatelessWidget {
         ),
         RepositoryProvider<ProgressRepository>(
           create: (_) => InMemoryProgressRepository(),
+        ),
+        RepositoryProvider<ProfileRepository>(
+          create: (context) => InMemoryProfileRepository(
+            onboardingRepository: context.read<OnboardingRepository>(),
+          ),
         ),
       ],
       child: MultiBlocProvider(
@@ -165,6 +179,23 @@ class NutriVisionApp extends StatelessWidget {
               return ProgressBloc(
                 getProgressSnapshot: GetProgressSnapshot(repository),
               )..add(const ProgressStarted());
+            },
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<ProfileRepository>();
+              return ProfileBloc(
+                getUserProfile: GetUserProfile(repository),
+                updateGoalsAndPreferences: UpdateGoalsAndPreferences(
+                  repository,
+                ),
+                updateNotificationPreferences: UpdateNotificationPreferences(
+                  repository,
+                ),
+                updatePrivacyPreferences: UpdatePrivacyPreferences(repository),
+                requestDataExport: RequestDataExport(repository),
+                deleteAccountData: DeleteAccountData(repository),
+              )..add(const ProfileLoadRequested());
             },
           ),
         ],

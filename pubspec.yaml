@@ -69,6 +69,7 @@ flutter:
     - assets/images/welcome/utensils.svg
     - assets/images/welcome/sprout.svg
     - assets/images/welcome/food_illustration_hd.svg
+    - assets/images/profile/maya_avatar.png
 
   fonts:
     - family: PlusJakartaSans
