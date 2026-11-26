@@ -14,11 +14,22 @@ import '../features/home/data/repositories/in_memory_home_repository.dart';
 import '../features/home/domain/repositories/home_repository.dart';
 import '../features/home/domain/usecases/get_home_dashboard.dart';
 import '../features/home/presentation/bloc/home_bloc.dart';
+import '../features/meals/data/repositories/in_memory_meals_repository.dart';
+import '../features/meals/domain/repositories/meals_repository.dart';
+import '../features/meals/domain/usecases/delete_meal.dart';
+import '../features/meals/domain/usecases/get_recent_meals.dart';
+import '../features/meals/domain/usecases/save_meal.dart';
+import '../features/meals/presentation/bloc/meals_bloc.dart';
 import '../features/onboarding/data/repositories/in_memory_onboarding_repository.dart';
 import '../features/onboarding/domain/repositories/onboarding_repository.dart';
 import '../features/onboarding/domain/usecases/complete_onboarding.dart';
 import '../features/onboarding/domain/usecases/save_onboarding_draft.dart';
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../features/recommendations/data/repositories/in_memory_recommendations_repository.dart';
+import '../features/recommendations/domain/repositories/recommendations_repository.dart';
+import '../features/recommendations/domain/usecases/get_recipe_details.dart';
+import '../features/recommendations/domain/usecases/get_recommended_recipes.dart';
+import '../features/recommendations/presentation/bloc/recommendations_bloc.dart';
 import '../features/water_tracker/data/datasources/water_local_data_source.dart';
 import '../features/water_tracker/data/repositories/water_repository_impl.dart';
 import '../features/water_tracker/domain/repositories/water_repository.dart';
@@ -50,6 +61,12 @@ class NutriVisionApp extends StatelessWidget {
         RepositoryProvider<WaterRepository>(
           create: (_) =>
               WaterRepositoryImpl(SharedPreferencesWaterLocalDataSource()),
+        ),
+        RepositoryProvider<MealsRepository>(
+          create: (_) => InMemoryMealsRepository(),
+        ),
+        RepositoryProvider<RecommendationsRepository>(
+          create: (_) => InMemoryRecommendationsRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -87,6 +104,25 @@ class NutriVisionApp extends StatelessWidget {
                 getTodayWater: GetTodayWater(repository),
                 addWater: AddWater(repository),
               )..add(const WaterTrackerStarted());
+            },
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<MealsRepository>();
+              return MealsBloc(
+                getRecentMeals: GetRecentMeals(repository),
+                saveMeal: SaveMeal(repository),
+                deleteMeal: DeleteMeal(repository),
+              )..add(const MealsStarted());
+            },
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<RecommendationsRepository>();
+              return RecommendationsBloc(
+                getRecommendedRecipes: GetRecommendedRecipes(repository),
+                getRecipeDetails: GetRecipeDetails(repository),
+              )..add(const RecommendationsStarted());
             },
           ),
         ],

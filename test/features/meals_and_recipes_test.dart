@@ -15,10 +15,21 @@ import 'package:nutrivision_capstone_project/features/home/data/repositories/in_
 import 'package:nutrivision_capstone_project/features/home/domain/repositories/home_repository.dart';
 import 'package:nutrivision_capstone_project/features/home/domain/usecases/get_home_dashboard.dart';
 import 'package:nutrivision_capstone_project/features/home/presentation/bloc/home_bloc.dart';
+import 'package:nutrivision_capstone_project/features/meals/data/repositories/in_memory_meals_repository.dart';
+import 'package:nutrivision_capstone_project/features/meals/domain/repositories/meals_repository.dart';
+import 'package:nutrivision_capstone_project/features/meals/domain/usecases/delete_meal.dart';
+import 'package:nutrivision_capstone_project/features/meals/domain/usecases/get_recent_meals.dart';
+import 'package:nutrivision_capstone_project/features/meals/domain/usecases/save_meal.dart';
+import 'package:nutrivision_capstone_project/features/meals/presentation/bloc/meals_bloc.dart';
 import 'package:nutrivision_capstone_project/features/meals/presentation/screens/analyzing_meal_screen.dart';
 import 'package:nutrivision_capstone_project/features/meals/presentation/screens/camera_scanner_screen.dart';
 import 'package:nutrivision_capstone_project/features/meals/presentation/screens/meal_details_screen.dart';
 import 'package:nutrivision_capstone_project/features/meals/presentation/screens/meal_screen.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/data/repositories/in_memory_recommendations_repository.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/repositories/recommendations_repository.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/get_recipe_details.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/domain/usecases/get_recommended_recipes.dart';
+import 'package:nutrivision_capstone_project/features/recommendations/presentation/bloc/recommendations_bloc.dart';
 import 'package:nutrivision_capstone_project/features/recommendations/presentation/screens/recipe_details_screen.dart';
 import 'package:nutrivision_capstone_project/features/water_tracker/data/datasources/water_local_data_source.dart';
 import 'package:nutrivision_capstone_project/features/water_tracker/data/repositories/water_repository_impl.dart';
@@ -39,6 +50,12 @@ Widget _buildRouterTestApp() {
       RepositoryProvider<WaterRepository>(
         create: (_) =>
             WaterRepositoryImpl(SharedPreferencesWaterLocalDataSource()),
+      ),
+      RepositoryProvider<MealsRepository>(
+        create: (_) => InMemoryMealsRepository(),
+      ),
+      RepositoryProvider<RecommendationsRepository>(
+        create: (_) => InMemoryRecommendationsRepository(),
       ),
     ],
     child: MultiBlocProvider(
@@ -68,6 +85,25 @@ Widget _buildRouterTestApp() {
             )..add(const WaterTrackerStarted());
           },
         ),
+        BlocProvider(
+          create: (context) {
+            final repository = context.read<MealsRepository>();
+            return MealsBloc(
+              getRecentMeals: GetRecentMeals(repository),
+              saveMeal: SaveMeal(repository),
+              deleteMeal: DeleteMeal(repository),
+            )..add(const MealsStarted());
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            final repository = context.read<RecommendationsRepository>();
+            return RecommendationsBloc(
+              getRecommendedRecipes: GetRecommendedRecipes(repository),
+              getRecipeDetails: GetRecipeDetails(repository),
+            )..add(const RecommendationsStarted());
+          },
+        ),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -89,6 +125,79 @@ void _setPhoneViewport(WidgetTester tester) {
 void main() {
   test('AppTheme uses PlusJakartaSans font family from menna branch', () {
     expect(AppTheme.light.textTheme.bodyMedium?.fontFamily, 'PlusJakartaSans');
+  });
+
+  group('Meals Clean Architecture', () {
+    test(
+      'MealsRepository provides recent meals and supports save and delete',
+      () async {
+        final repository = InMemoryMealsRepository();
+        final meals = await repository.getRecentMeals();
+        expect(meals, isNotEmpty);
+        expect(meals.first.name, 'Chicken & quinoa bowl');
+
+        final sample = meals.first.copyWith(
+          id: 'new-meal-id',
+          name: 'Salmon Bowl',
+        );
+        await repository.saveMeal(sample);
+        final updated = await repository.getRecentMeals();
+        expect(updated.length, meals.length + 1);
+
+        await repository.deleteMeal('new-meal-id');
+        final afterDelete = await repository.getRecentMeals();
+        expect(afterDelete.length, meals.length);
+      },
+    );
+
+    test(
+      'MealsBloc emits loaded state and handles save and delete events',
+      () async {
+        final repository = InMemoryMealsRepository();
+        final bloc = MealsBloc(
+          getRecentMeals: GetRecentMeals(repository),
+          saveMeal: SaveMeal(repository),
+          deleteMeal: DeleteMeal(repository),
+        );
+        addTearDown(bloc.close);
+
+        final loadedStateFuture = bloc.stream.firstWhere(
+          (s) => s.status == MealsStatus.success,
+        );
+        bloc.add(const MealsStarted());
+        final loadedState = await loadedStateFuture;
+        expect(loadedState.meals, isNotEmpty);
+        expect(loadedState.selectedMeal?.name, 'Chicken & quinoa bowl');
+      },
+    );
+  });
+
+  group('Recommendations Clean Architecture', () {
+    test('RecommendationsRepository returns recommended recipes', () async {
+      final repository = InMemoryRecommendationsRepository();
+      final recipes = await repository.getRecommendedRecipes();
+      expect(recipes, isNotEmpty);
+      expect(recipes.first.title, 'Lemon salmon & couscous');
+      expect(recipes.first.ingredients, hasLength(8));
+      expect(recipes.first.steps, hasLength(4));
+    });
+
+    test('RecommendationsBloc loads recommendations', () async {
+      final repository = InMemoryRecommendationsRepository();
+      final bloc = RecommendationsBloc(
+        getRecommendedRecipes: GetRecommendedRecipes(repository),
+        getRecipeDetails: GetRecipeDetails(repository),
+      );
+      addTearDown(bloc.close);
+
+      final loadedFuture = bloc.stream.firstWhere(
+        (s) => s.status == RecommendationsStatus.success,
+      );
+      bloc.add(const RecommendationsStarted());
+      final loaded = await loadedFuture;
+      expect(loaded.recipes, isNotEmpty);
+      expect(loaded.selectedRecipe?.title, 'Lemon salmon & couscous');
+    });
   });
 
   group('Integrated meal and recipe screens', () {
