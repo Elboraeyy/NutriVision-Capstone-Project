@@ -146,7 +146,7 @@ class DiscoverScreen extends StatelessWidget {
                   case 2:
                     break;
                   case 3:
-                    context.go('/water-tracker');
+                    context.go('/progress');
                     break;
                   case 4:
                     context.go('/profile');

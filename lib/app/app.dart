@@ -32,6 +32,10 @@ import '../features/onboarding/domain/repositories/onboarding_repository.dart';
 import '../features/onboarding/domain/usecases/complete_onboarding.dart';
 import '../features/onboarding/domain/usecases/save_onboarding_draft.dart';
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../features/progress/data/repositories/in_memory_progress_repository.dart';
+import '../features/progress/domain/repositories/progress_repository.dart';
+import '../features/progress/domain/usecases/get_progress_snapshot.dart';
+import '../features/progress/presentation/bloc/progress_bloc.dart';
 import '../features/recommendations/data/repositories/in_memory_recommendations_repository.dart';
 import '../features/recommendations/domain/repositories/recommendations_repository.dart';
 import '../features/recommendations/domain/usecases/get_recipe_details.dart';
@@ -80,6 +84,9 @@ class NutriVisionApp extends StatelessWidget {
         ),
         RepositoryProvider<MealPlanRepository>(
           create: (_) => InMemoryMealPlanRepository(),
+        ),
+        RepositoryProvider<ProgressRepository>(
+          create: (_) => InMemoryProgressRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -150,6 +157,14 @@ class NutriVisionApp extends StatelessWidget {
                 cycleAlternativeMeal: CycleAlternativeMeal(repository),
                 approveMealPlan: ApproveMealPlan(repository),
               )..add(const MealPlanStarted());
+            },
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<ProgressRepository>();
+              return ProgressBloc(
+                getProgressSnapshot: GetProgressSnapshot(repository),
+              )..add(const ProgressStarted());
             },
           ),
         ],

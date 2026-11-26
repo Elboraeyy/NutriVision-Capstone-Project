@@ -15,6 +15,8 @@ import '../../features/onboarding/presentation/screens/allergies_screen.dart';
 import '../../features/onboarding/presentation/screens/food_preferences_screen.dart';
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/progress/presentation/screens/insights_screen.dart';
+import '../../features/progress/presentation/screens/progress_screen.dart';
 import '../../features/recommendations/presentation/screens/discover_screen.dart';
 import '../../features/recommendations/presentation/screens/recipe_details_screen.dart';
 import '../../features/recommendations/presentation/screens/recipe_search_screen.dart';
@@ -146,6 +148,16 @@ abstract final class AppRouter {
         path: '/meal-plan/edit',
         name: 'edit-meal-plan',
         builder: (context, state) => const EditMealPlanScreen(),
+      ),
+      GoRoute(
+        path: '/progress',
+        name: 'progress',
+        builder: (context, state) => const ProgressScreen(),
+      ),
+      GoRoute(
+        path: '/progress/insights',
+        name: 'insights',
+        builder: (context, state) => const InsightsScreen(),
       ),
     ],
   );

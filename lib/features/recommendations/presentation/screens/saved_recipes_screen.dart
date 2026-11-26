@@ -170,13 +170,13 @@ class SavedRecipesScreen extends StatelessWidget {
                     context.go('/home');
                     break;
                   case 1:
-                    context.go('/meals');
+                    context.go('/meal-plan');
                     break;
                   case 2:
                     context.go('/discover');
                     break;
                   case 3:
-                    context.go('/water-tracker');
+                    context.go('/progress');
                     break;
                   case 4:
                     context.go('/profile');
