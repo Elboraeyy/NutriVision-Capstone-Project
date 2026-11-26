@@ -99,23 +99,28 @@ class _HomeHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 8)),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: AppResponsive.font(context, 28),
-                fontWeight: FontWeight.w300,
-                height: 1.1,
-              ),
-              children: [
-                const TextSpan(text: 'Good afternoon, '),
-                TextSpan(
-                  text: userName?.trim().isNotEmpty == true
-                      ? userName!.trim()
-                      : 'Mohamed',
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: RichText(
+              maxLines: 1,
+              text: TextSpan(
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: AppResponsive.font(context, 28),
+                  fontWeight: FontWeight.w300,
+                  height: 1.1,
                 ),
-              ],
+                children: [
+                  const TextSpan(text: 'Good afternoon, '),
+                  TextSpan(
+                    text: userName?.trim().isNotEmpty == true
+                        ? userName!.trim()
+                        : 'Mohamed',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: AppResponsive.value(context, 3)),
@@ -160,20 +165,22 @@ class _HomeContent extends StatelessWidget {
               _ScanMealButton(onPressed: onScanMeal),
               SizedBox(height: AppResponsive.value(context, 9)),
               _ManualLogButton(
-                onPressed: () => AppToast.show(
-                  context,
-                  message: 'Manual food logging will be available soon.',
-                  type: AppToastType.info,
-                ),
+                onPressed: () => context.pushNamed('meal-review'),
               ),
               SizedBox(height: AppResponsive.value(context, 12)),
               const _WaterCard(),
               SizedBox(height: AppResponsive.value(context, 16)),
               const _SectionHeading(title: 'Recently logged', action: 'Diary'),
               SizedBox(height: AppResponsive.value(context, 8)),
-              _RecentMealCard(meal: dashboard.recentMeal),
+              _RecentMealCard(
+                meal: dashboard.recentMeal,
+                onTap: () => context.pushNamed('meal-details'),
+              ),
               SizedBox(height: AppResponsive.value(context, 14)),
-              _AiSuggestionCard(suggestion: dashboard.suggestion),
+              _AiSuggestionCard(
+                suggestion: dashboard.suggestion,
+                onTap: () => context.pushNamed('recipe-details'),
+              ),
             ]),
           ),
         ),
@@ -201,52 +208,69 @@ class _NutritionCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Today’s nutrition',
-                style: TextStyle(
-                  color: AppColors.darkGreen,
-                  fontSize: AppResponsive.font(context, 14),
-                  fontWeight: FontWeight.w800,
+              Expanded(
+                child: Text(
+                  'Today’s nutrition',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppColors.darkGreen,
+                    fontSize: AppResponsive.font(context, 14),
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
-              Text(
-                'From logged food',
-                style: TextStyle(
-                  color: AppColors.mutedGreen,
-                  fontSize: AppResponsive.font(context, 10),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'From logged food',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppColors.mutedGreen,
+                    fontSize: AppResponsive.font(context, 10),
+                  ),
                 ),
               ),
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 11)),
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: _CaloriesRing(
-                  consumedCalories: summary.consumedCalories,
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _NutritionNumber(
-                      value: '${summary.remainingCalories}',
-                      unit: 'kcal',
-                      label: 'remaining',
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: _CaloriesRing(
+                      consumedCalories: summary.consumedCalories,
                     ),
-                    _NutritionNumber(
-                      value: '${summary.goalCalories}',
-                      unit: 'kcal',
-                      label: 'Goal',
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: _NutritionNumber(
+                          value: '${summary.remainingCalories}',
+                          unit: 'kcal',
+                          label: 'remaining',
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: _NutritionNumber(
+                          value: '${summary.goalCalories}',
+                          unit: 'kcal',
+                          label: 'Goal',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBox(height: AppResponsive.value(context, 10)),
           Row(
@@ -347,32 +371,38 @@ class _NutritionNumber extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              value,
-              style: TextStyle(
-                color: AppColors.green,
-                fontSize: AppResponsive.font(context, 22),
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(width: AppResponsive.value(context, 3)),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                unit,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                value,
                 style: TextStyle(
-                  color: AppColors.mutedGreen,
-                  fontSize: AppResponsive.font(context, 10),
+                  color: AppColors.green,
+                  fontSize: AppResponsive.font(context, 22),
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-            ),
-          ],
+              SizedBox(width: AppResponsive.value(context, 3)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  unit,
+                  style: TextStyle(
+                    color: AppColors.mutedGreen,
+                    fontSize: AppResponsive.font(context, 10),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: AppColors.mutedGreen,
             fontSize: AppResponsive.font(context, 10),
@@ -410,17 +440,24 @@ class _MacroPill extends StatelessWidget {
         children: [
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.mutedGreen,
               fontSize: AppResponsive.font(context, 10),
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              color: AppColors.darkGreen,
-              fontSize: AppResponsive.font(context, 10),
-              fontWeight: FontWeight.w700,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: TextStyle(
+                color: AppColors.darkGreen,
+                fontSize: AppResponsive.font(context, 10),
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -695,165 +732,197 @@ class _SectionHeading extends StatelessWidget {
 }
 
 class _RecentMealCard extends StatelessWidget {
-  const _RecentMealCard({required this.meal});
+  const _RecentMealCard({required this.meal, required this.onTap});
 
   final RecentMeal meal;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppResponsive.value(context, 15)),
-      decoration: BoxDecoration(
-        color: AppColors.yellow,
-        borderRadius: BorderRadius.circular(AppResponsive.value(context, 21)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: AppResponsive.value(context, 66),
-            height: AppResponsive.value(context, 66),
-            decoration: BoxDecoration(
-              color: AppColors.peach,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.restaurant, color: AppColors.green),
+    final borderRadius = BorderRadius.circular(
+      AppResponsive.value(context, 21),
+    );
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        child: Ink(
+          padding: EdgeInsets.all(AppResponsive.value(context, 15)),
+          decoration: BoxDecoration(
+            color: AppColors.yellow,
+            borderRadius: borderRadius,
           ),
-          SizedBox(width: AppResponsive.value(context, 9)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  meal.time,
-                  style: TextStyle(
-                    color: AppColors.mutedGreen,
-                    fontSize: AppResponsive.font(context, 10),
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: AppResponsive.value(context, 66),
+                height: AppResponsive.value(context, 66),
+                decoration: BoxDecoration(
+                  color: AppColors.peach,
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                Text(
-                  meal.title,
-                  style: TextStyle(
-                    color: AppColors.darkGreen,
-                    fontSize: AppResponsive.font(context, 14),
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: const Icon(Icons.restaurant, color: AppColors.green),
+              ),
+              SizedBox(width: AppResponsive.value(context, 9)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      meal.time,
+                      style: TextStyle(
+                        color: AppColors.mutedGreen,
+                        fontSize: AppResponsive.font(context, 10),
+                      ),
+                    ),
+                    Text(
+                      meal.title,
+                      style: TextStyle(
+                        color: AppColors.darkGreen,
+                        fontSize: AppResponsive.font(context, 14),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      'Est. ${meal.calories} kcal',
+                      style: TextStyle(
+                        color: AppColors.mutedGreen,
+                        fontSize: AppResponsive.font(context, 10),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Est. ${meal.calories} kcal',
-                  style: TextStyle(
-                    color: AppColors.mutedGreen,
-                    fontSize: AppResponsive.font(context, 10),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.green),
+            ],
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.green),
-        ],
+        ),
       ),
     );
   }
 }
 
 class _AiSuggestionCard extends StatelessWidget {
-  const _AiSuggestionCard({required this.suggestion});
+  const _AiSuggestionCard({required this.suggestion, required this.onTap});
 
   final MealSuggestion suggestion;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppResponsive.value(context, 20)),
-      decoration: BoxDecoration(
-        color: AppColors.green,
-        borderRadius: BorderRadius.circular(AppResponsive.value(context, 24)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final borderRadius = BorderRadius.circular(
+      AppResponsive.value(context, 24),
+    );
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        child: Ink(
+          padding: EdgeInsets.all(AppResponsive.value(context, 20)),
+          decoration: BoxDecoration(
+            color: AppColors.green,
+            borderRadius: borderRadius,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'AI suggestion',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: AppResponsive.font(context, 11),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.lime,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      suggestion.tag,
+                      style: TextStyle(
+                        color: AppColors.green,
+                        fontSize: AppResponsive.font(context, 7),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppResponsive.value(context, 9)),
               Text(
-                'AI suggestion',
+                suggestion.title.replaceFirst(' & ', ' &\n'),
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: AppResponsive.font(context, 11),
-                  fontWeight: FontWeight.w700,
+                  fontSize: AppResponsive.font(context, 22),
+                  fontWeight: FontWeight.w800,
+                  height: 1.05,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.lime,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  suggestion.tag,
-                  style: TextStyle(
-                    color: AppColors.green,
-                    fontSize: AppResponsive.font(context, 7),
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: AppResponsive.value(context, 9)),
-          Text(
-            suggestion.title.replaceFirst(' & ', ' &\n'),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: AppResponsive.font(context, 22),
-              fontWeight: FontWeight.w800,
-              height: 1.05,
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 9)),
-          Text(
-            suggestion.description,
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 10),
-              height: 1.35,
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 9)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+              SizedBox(height: AppResponsive.value(context, 9)),
               Text(
-                'Est. ${suggestion.calories} kcal · ${suggestion.proteinGrams} g protein\n${suggestion.carbsGrams} g carbs · ${suggestion.fatGrams} g fat',
+                suggestion.description,
                 style: TextStyle(
                   color: AppColors.softGreen,
                   fontSize: AppResponsive.font(context, 10),
                   height: 1.35,
                 ),
               ),
-              FilledButton(
-                onPressed: () => AppToast.show(
-                  context,
-                  message: 'Adding meals to your diary will be available soon.',
-                  type: AppToastType.info,
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.lime,
-                  foregroundColor: AppColors.green,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppResponsive.value(context, 10),
+              SizedBox(height: AppResponsive.value(context, 9)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Est. ${suggestion.calories} kcal · ${suggestion.proteinGrams} g protein\n${suggestion.carbsGrams} g carbs · ${suggestion.fatGrams} g fat',
+                      style: TextStyle(
+                        color: AppColors.softGreen,
+                        fontSize: AppResponsive.font(context, 10),
+                        height: 1.35,
+                      ),
+                    ),
                   ),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: const StadiumBorder(),
-                ),
-                child: const Text(
-                  'Add to diary ✓',
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800),
-                ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () => AppToast.show(
+                      context,
+                      message:
+                          'Adding meals to your diary will be available soon.',
+                      type: AppToastType.info,
+                    ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.lime,
+                      foregroundColor: AppColors.green,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppResponsive.value(context, 10),
+                      ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: const StadiumBorder(),
+                    ),
+                    child: const Text(
+                      'Add to diary ✓',
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

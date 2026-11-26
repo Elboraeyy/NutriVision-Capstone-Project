@@ -4,10 +4,15 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/sign_in_screen.dart';
 import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/meals/presentation/screens/analyzing_meal_screen.dart';
+import '../../features/meals/presentation/screens/camera_scanner_screen.dart';
+import '../../features/meals/presentation/screens/meal_details_screen.dart';
+import '../../features/meals/presentation/screens/meal_screen.dart';
 import '../../features/onboarding/presentation/screens/allergies_screen.dart';
 import '../../features/onboarding/presentation/screens/food_preferences_screen.dart';
 import '../../features/onboarding/presentation/screens/goal_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/recommendations/presentation/screens/recipe_details_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/water_tracker/presentation/screens/water_tracker_screen.dart';
 import '../../features/welcome/presentation/screens/welcome_screen.dart';
@@ -80,6 +85,31 @@ abstract final class AppRouter {
         path: '/water-tracker',
         name: 'water-tracker',
         builder: (context, state) => const WaterTrackerScreen(),
+      ),
+      GoRoute(
+        path: '/meals/scan',
+        name: 'meal-scan',
+        builder: (context, state) => const CameraScannerScreen(),
+      ),
+      GoRoute(
+        path: '/meals/analyzing',
+        name: 'meal-analyzing',
+        builder: (context, state) => const AnalyzingMealScreen(),
+      ),
+      GoRoute(
+        path: '/meals/review',
+        name: 'meal-review',
+        builder: (context, state) => const MealScreen(),
+      ),
+      GoRoute(
+        path: '/meals/details',
+        name: 'meal-details',
+        builder: (context, state) => const MealDetailsScreen(),
+      ),
+      GoRoute(
+        path: '/recommendations/recipe',
+        name: 'recipe-details',
+        builder: (context, state) => const RecipeDetailsScreen(),
       ),
     ],
   );

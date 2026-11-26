@@ -95,17 +95,23 @@ class _HomeScreenState extends State<HomeScreen>
                   header: _HomeHeader(dashboard: dashboard, userName: userName),
                   body: _HomeBody(
                     dashboard: dashboard,
-                    onScanMeal: () => _showComingSoon(context, 'Meal scan'),
+                    onScanMeal: () => context.pushNamed('meal-scan'),
                     selectedTab: state.selectedTab,
                     onTabSelected: (index) {
-                      if (index == 4) {
+                      if (index == 2) {
+                        context.read<HomeBloc>().add(const HomeTabSelected(0));
+                        context.pushNamed('recipe-details');
+                      } else if (index == 4) {
                         context.read<HomeBloc>().add(const HomeTabSelected(0));
                         context.pushNamed('profile');
                       } else {
                         context.read<HomeBloc>().add(HomeTabSelected(index));
-                      }
-                      if (index != 0 && index != 4) {
-                        _showComingSoon(context, _navigationItems[index].label);
+                        if (index != 0) {
+                          _showComingSoon(
+                            context,
+                            _navigationItems[index].label,
+                          );
+                        }
                       }
                     },
                   ),
