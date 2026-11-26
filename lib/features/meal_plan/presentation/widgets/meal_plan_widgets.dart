@@ -46,7 +46,7 @@ class MealPlanHeader extends StatelessWidget {
       ),
       padding: EdgeInsets.fromLTRB(
         AppResponsive.value(context, 20),
-        topPadding + AppResponsive.value(context, 12),
+        topPadding + AppResponsive.value(context, 18),
         AppResponsive.value(context, 20),
         AppResponsive.value(context, 28),
       ),
@@ -113,17 +113,19 @@ class MealPlanHeader extends StatelessWidget {
           SizedBox(height: AppResponsive.value(context, 16)),
           // Subtitle and Generate Plan Button
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
+              Flexible(
                 child: Text(
                   statusNote,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.85),
                     fontSize: AppResponsive.font(context, 13),
                     fontWeight: FontWeight.w500,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               SizedBox(width: AppResponsive.value(context, 12)),
@@ -636,42 +638,52 @@ class MealSubHeader extends StatelessWidget {
         AppResponsive.value(context, 20),
         AppResponsive.value(context, 24),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: onBack ?? () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.arrow_back_rounded),
-                color: Colors.white,
-                iconSize: AppResponsive.value(context, 24),
-              ),
-              SizedBox(width: AppResponsive.value(context, 4)),
-              Expanded(
-                child: Text(
+          Positioned(
+            left: 0,
+            top: 0,
+            child: IconButton(
+              onPressed: onBack ?? () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back_rounded),
+              color: Colors.white,
+              iconSize: AppResponsive.value(context, 24),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppResponsive.value(context, 36),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
                   title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: AppResponsive.font(context, 19),
                     fontWeight: FontWeight.w700,
                   ),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: AppResponsive.value(context, 48),
-              top: AppResponsive.value(context, 2),
-            ),
-            child: Text(
-              subtitle,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.8),
-                fontSize: AppResponsive.font(context, 13),
-              ),
+                SizedBox(height: AppResponsive.value(context, 4)),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: AppResponsive.font(context, 13),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
         ],

@@ -98,25 +98,33 @@ class MealReviewHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 10)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Make it your meal',
-              style: TextStyle(
-                fontSize: AppResponsive.font(context, 26),
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                height: 1.15,
-              ),
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 4)),
-          Text(
-            'AI results & review · Not yet in your diary',
-            style: TextStyle(
-              fontSize: AppResponsive.font(context, 13),
-              color: AppColors.softGreen,
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Make it your meal',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppResponsive.font(context, 26),
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      height: 1.15,
+                    ),
+                  ),
+                ),
+                SizedBox(height: AppResponsive.value(context, 4)),
+                Text(
+                  'AI results & review · Not yet in your diary',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: AppResponsive.font(context, 13),
+                    color: AppColors.softGreen,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

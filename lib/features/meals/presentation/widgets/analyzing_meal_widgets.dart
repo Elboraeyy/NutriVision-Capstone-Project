@@ -103,25 +103,33 @@ class AnalyzingHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 10)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'A closer look',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: AppResponsive.font(context, 26),
-                fontWeight: FontWeight.w800,
-                height: 1.15,
-              ),
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 4)),
-          Text(
-            'Getting to know your meal.',
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 13),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'A closer look',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: AppResponsive.font(context, 26),
+                      fontWeight: FontWeight.w800,
+                      height: 1.15,
+                    ),
+                  ),
+                ),
+                SizedBox(height: AppResponsive.value(context, 4)),
+                Text(
+                  'Getting to know your meal.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.softGreen,
+                    fontSize: AppResponsive.font(context, 13),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

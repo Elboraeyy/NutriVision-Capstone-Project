@@ -131,24 +131,33 @@ class DiscoverHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 16)),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: AppResponsive.font(context, 28),
-              fontWeight: FontWeight.w800,
-              height: 1.15,
-              letterSpacing: -0.5,
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 6)),
-          Text(
-            subtitle,
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 13),
-              fontWeight: FontWeight.w400,
-              height: 1.45,
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: AppResponsive.font(context, 28),
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(height: AppResponsive.value(context, 6)),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.softGreen,
+                    fontSize: AppResponsive.font(context, 13),
+                    fontWeight: FontWeight.w400,
+                    height: 1.45,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

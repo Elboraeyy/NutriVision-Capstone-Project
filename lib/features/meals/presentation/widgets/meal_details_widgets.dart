@@ -99,25 +99,33 @@ class MealDetailsHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 10)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Meal details',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: AppResponsive.font(context, 26),
-                fontWeight: FontWeight.w800,
-                height: 1.15,
-              ),
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 4)),
-          Text(
-            'Wednesday, Oct 14 · Lunch at 12:30 PM',
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 13),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Meal details',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: AppResponsive.font(context, 26),
+                      fontWeight: FontWeight.w800,
+                      height: 1.15,
+                    ),
+                  ),
+                ),
+                SizedBox(height: AppResponsive.value(context, 4)),
+                Text(
+                  'Wednesday, Oct 14 · Lunch at 12:30 PM',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.softGreen,
+                    fontSize: AppResponsive.font(context, 13),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

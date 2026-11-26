@@ -99,36 +99,43 @@ class _HomeHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 8)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: RichText(
-              maxLines: 1,
-              text: TextSpan(
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: AppResponsive.font(context, 28),
-                  fontWeight: FontWeight.w300,
-                  height: 1.1,
-                ),
-                children: [
-                  const TextSpan(text: 'Good afternoon, '),
-                  TextSpan(
-                    text: userName?.trim().isNotEmpty == true
-                        ? userName!.trim()
-                        : 'Mohamed',
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+          Center(
+            child: Column(
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: RichText(
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: AppResponsive.font(context, 28),
+                        fontWeight: FontWeight.w300,
+                        height: 1.1,
+                      ),
+                      children: [
+                        const TextSpan(text: 'Good afternoon, '),
+                        TextSpan(
+                          text: userName?.trim().isNotEmpty == true
+                              ? userName!.trim()
+                              : 'Mohamed',
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 3)),
-          Text(
-            dashboard.dayLabel,
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 11),
+                ),
+                SizedBox(height: AppResponsive.value(context, 3)),
+                Text(
+                  dashboard.dayLabel,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.softGreen,
+                    fontSize: AppResponsive.font(context, 11),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

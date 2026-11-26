@@ -232,22 +232,31 @@ class _WaterTrackerHeader extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppResponsive.value(context, 14)),
-          Text(
-            'Every sip counts.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: AppResponsive.font(context, 28),
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-            ),
-          ),
-          SizedBox(height: AppResponsive.value(context, 4)),
-          Text(
-            'Water tracker · $formattedDate',
-            style: TextStyle(
-              color: AppColors.softGreen,
-              fontSize: AppResponsive.font(context, 12),
-              fontWeight: FontWeight.w500,
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Every sip counts.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: AppResponsive.font(context, 28),
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(height: AppResponsive.value(context, 4)),
+                Text(
+                  'Water tracker · $formattedDate',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.softGreen,
+                    fontSize: AppResponsive.font(context, 12),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
