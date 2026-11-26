@@ -14,6 +14,13 @@ import '../features/home/data/repositories/in_memory_home_repository.dart';
 import '../features/home/domain/repositories/home_repository.dart';
 import '../features/home/domain/usecases/get_home_dashboard.dart';
 import '../features/home/presentation/bloc/home_bloc.dart';
+import '../features/meal_plan/data/repositories/in_memory_meal_plan_repository.dart';
+import '../features/meal_plan/domain/repositories/meal_plan_repository.dart';
+import '../features/meal_plan/domain/usecases/approve_meal_plan.dart';
+import '../features/meal_plan/domain/usecases/cycle_alternative_meal.dart';
+import '../features/meal_plan/domain/usecases/generate_ai_meal_plan.dart';
+import '../features/meal_plan/domain/usecases/get_meal_plan.dart';
+import '../features/meal_plan/presentation/bloc/meal_plan_bloc.dart';
 import '../features/meals/data/repositories/in_memory_meals_repository.dart';
 import '../features/meals/domain/repositories/meals_repository.dart';
 import '../features/meals/domain/usecases/delete_meal.dart';
@@ -70,6 +77,9 @@ class NutriVisionApp extends StatelessWidget {
         ),
         RepositoryProvider<RecommendationsRepository>(
           create: (_) => InMemoryRecommendationsRepository(),
+        ),
+        RepositoryProvider<MealPlanRepository>(
+          create: (_) => InMemoryMealPlanRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -129,6 +139,17 @@ class NutriVisionApp extends StatelessWidget {
                 toggleSaveRecipe: ToggleSaveRecipe(repository),
                 getSavedRecipes: GetSavedRecipes(repository),
               )..add(const RecommendationsStarted());
+            },
+          ),
+          BlocProvider(
+            create: (context) {
+              final repository = context.read<MealPlanRepository>();
+              return MealPlanBloc(
+                getMealPlan: GetMealPlan(repository),
+                generateAiMealPlan: GenerateAiMealPlan(repository),
+                cycleAlternativeMeal: CycleAlternativeMeal(repository),
+                approveMealPlan: ApproveMealPlan(repository),
+              )..add(const MealPlanStarted());
             },
           ),
         ],

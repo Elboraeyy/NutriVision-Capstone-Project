@@ -99,7 +99,10 @@ class _HomeScreenState extends State<HomeScreen>
                     onScanMeal: () => context.pushNamed('meal-scan'),
                     selectedTab: state.selectedTab,
                     onTabSelected: (index) {
-                      if (index == 2) {
+                      if (index == 1) {
+                        context.read<HomeBloc>().add(const HomeTabSelected(0));
+                        context.pushNamed('meal-plan');
+                      } else if (index == 2) {
                         context.read<HomeBloc>().add(const HomeTabSelected(0));
                         context.pushNamed('discover');
                       } else if (index == 4) {

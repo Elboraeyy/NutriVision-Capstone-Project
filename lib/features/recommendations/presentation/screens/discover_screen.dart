@@ -142,7 +142,7 @@ class DiscoverScreen extends StatelessWidget {
                     context.go('/home');
                     break;
                   case 1:
-                    context.go('/meals');
+                    context.go('/meal-plan');
                     break;
                   case 2:
                     break;

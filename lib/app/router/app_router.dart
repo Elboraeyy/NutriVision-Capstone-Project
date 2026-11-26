@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/sign_in_screen.dart';
 import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/meal_plan/presentation/screens/ai_plan_generate_screen.dart';
+import '../../features/meal_plan/presentation/screens/edit_meal_plan_screen.dart';
+import '../../features/meal_plan/presentation/screens/meal_plan_screen.dart';
 import '../../features/meals/presentation/screens/analyzing_meal_screen.dart';
 import '../../features/meals/presentation/screens/camera_scanner_screen.dart';
 import '../../features/meals/presentation/screens/meal_details_screen.dart';
@@ -128,6 +131,21 @@ abstract final class AppRouter {
         path: '/discover/saved',
         name: 'saved-recipes',
         builder: (context, state) => const SavedRecipesScreen(),
+      ),
+      GoRoute(
+        path: '/meal-plan',
+        name: 'meal-plan',
+        builder: (context, state) => const MealPlanScreen(),
+      ),
+      GoRoute(
+        path: '/meal-plan/generate',
+        name: 'ai-plan-generate',
+        builder: (context, state) => const AiPlanGenerateScreen(),
+      ),
+      GoRoute(
+        path: '/meal-plan/edit',
+        name: 'edit-meal-plan',
+        builder: (context, state) => const EditMealPlanScreen(),
       ),
     ],
   );
