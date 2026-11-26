@@ -21,9 +21,7 @@ class DiscoverScreen extends StatelessWidget {
         final everydayRecipes = state.recipes
             .where((r) => r.id != featured?.id)
             .toList();
-        final headerHeight = AppOverlayScaffold.contentTop(context, 140);
-        final searchBarHeight = AppResponsive.value(context, 48);
-        final overlap = AppResponsive.value(context, 24);
+        final headerHeight = AppOverlayScaffold.contentTop(context, 125);
 
         return AppOverlayScaffold(
           header: DiscoverHeader(
@@ -36,16 +34,19 @@ class DiscoverScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.fromLTRB(
               AppResponsive.value(context, 20),
-              headerHeight +
-                  searchBarHeight -
-                  overlap +
-                  AppResponsive.value(context, 14),
+              headerHeight + AppResponsive.value(context, 16),
               AppResponsive.value(context, 20),
               AppResponsive.value(context, 100),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                DiscoverSearchBar(
+                  readOnly: true,
+                  onTap: () => context.pushNamed('recipe-search'),
+                  onFilterTap: () => context.pushNamed('recipe-search'),
+                ),
+                SizedBox(height: AppResponsive.value(context, 14)),
                 const PreferenceNotice(),
                 SizedBox(height: AppResponsive.value(context, 22)),
                 if (featured != null) ...[
@@ -128,44 +129,32 @@ class DiscoverScreen extends StatelessWidget {
               ],
             ),
           ),
-          foregrounds: [
-            Positioned(
-              top: headerHeight - overlap,
-              left: AppResponsive.value(context, 20),
-              right: AppResponsive.value(context, 20),
-              child: DiscoverSearchBar(
-                readOnly: true,
-                onTap: () => context.pushNamed('recipe-search'),
-                onFilterTap: () => context.pushNamed('recipe-search'),
-              ),
+          foreground: Positioned(
+            left: AppResponsive.value(context, 14),
+            right: AppResponsive.value(context, 14),
+            bottom: AppResponsive.value(context, 8),
+            child: AppFloatingNavigationBar(
+              selectedIndex: 2,
+              onSelected: (index) {
+                switch (index) {
+                  case 0:
+                    context.go('/home');
+                    break;
+                  case 1:
+                    context.go('/meal-plan');
+                    break;
+                  case 2:
+                    break;
+                  case 3:
+                    context.go('/water-tracker');
+                    break;
+                  case 4:
+                    context.go('/profile');
+                    break;
+                }
+              },
             ),
-            Positioned(
-              left: AppResponsive.value(context, 14),
-              right: AppResponsive.value(context, 14),
-              bottom: AppResponsive.value(context, 8),
-              child: AppFloatingNavigationBar(
-                selectedIndex: 2,
-                onSelected: (index) {
-                  switch (index) {
-                    case 0:
-                      context.go('/home');
-                      break;
-                    case 1:
-                      context.go('/meal-plan');
-                      break;
-                    case 2:
-                      break;
-                    case 3:
-                      context.go('/water-tracker');
-                      break;
-                    case 4:
-                      context.go('/profile');
-                      break;
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
         );
       },
     );
