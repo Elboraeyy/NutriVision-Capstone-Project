@@ -67,7 +67,9 @@ class OnboardingDraftSaveRequested extends OnboardingEvent {
 }
 
 class OnboardingCompleted extends OnboardingEvent {
-  const OnboardingCompleted();
+  const OnboardingCompleted({required this.userId});
+
+  final String userId;
 }
 
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
@@ -172,7 +174,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   ) async {
     emit(state.copyWith(status: OnboardingStatus.saving, message: null));
     try {
-      await _complete(state.profile);
+      await _complete(state.profile, userId: event.userId);
       emit(state.copyWith(status: OnboardingStatus.completed, message: null));
     } catch (error) {
       emit(

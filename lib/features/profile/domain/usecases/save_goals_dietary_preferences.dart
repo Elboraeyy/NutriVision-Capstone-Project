@@ -8,14 +8,15 @@ class SaveGoalsDietaryPreferences {
   final GoalsDietaryRepository _repository;
 
   Future<GoalsDietaryPreferences> call(
-    GoalsDietaryPreferences preferences,
-  ) async {
+    GoalsDietaryPreferences preferences, {
+    required String userId,
+  }) async {
     final normalized = _normalize(preferences);
     final error = normalized.validate();
     if (error != null) {
       throw GoalsDietaryValidationException(error);
     }
-    await _repository.savePreferences(normalized);
+    await _repository.savePreferences(userId: userId, preferences: normalized);
     return normalized;
   }
 

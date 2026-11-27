@@ -9,8 +9,8 @@ import '../../../../core/theme/app_system_ui.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_overlay_scaffold.dart';
 import '../../../../core/widgets/app_toast.dart';
+import '../../../auth/presentation/bloc/auth_session_bloc.dart';
 import '../../../home/presentation/bloc/home_bloc.dart';
-import '../../../onboarding/presentation/bloc/onboarding_bloc.dart';
 import '../../domain/entities/goals_dietary_preferences.dart';
 import '../bloc/goals_dietary_bloc.dart';
 import '../widgets/goals_dietary_widgets.dart';
@@ -26,15 +26,9 @@ class _GoalsDietaryScreenState extends State<GoalsDietaryScreen> {
   @override
   void initState() {
     super.initState();
-    OnboardingBloc? onboardingBloc;
-    try {
-      onboardingBloc = context.read<OnboardingBloc>();
-    } catch (_) {
-      onboardingBloc = null;
-    }
-    context.read<GoalsDietaryBloc>().add(
-      GoalsDietaryStarted(onboardingProfile: onboardingBloc?.state.profile),
-    );
+    final userId = context.read<AuthSessionBloc>().state.user?.id;
+    if (userId == null || userId.isEmpty) return;
+    context.read<GoalsDietaryBloc>().add(GoalsDietaryStarted(userId: userId));
   }
 
   void _navigateBack(BuildContext context) {

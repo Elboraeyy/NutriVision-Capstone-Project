@@ -7,6 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nutrivision_capstone_project/core/theme/app_theme.dart';
 import 'package:nutrivision_capstone_project/core/widgets/app_bottom_nav_bar.dart';
 import 'package:nutrivision_capstone_project/core/widgets/app_toast.dart';
+import 'package:nutrivision_capstone_project/features/auth/domain/entities/auth_user.dart';
+import 'package:nutrivision_capstone_project/features/auth/data/repositories/in_memory_auth_repository.dart';
+import 'package:nutrivision_capstone_project/features/auth/domain/usecases/sign_in.dart';
+import 'package:nutrivision_capstone_project/features/auth/domain/usecases/sign_out.dart';
+import 'package:nutrivision_capstone_project/features/auth/domain/usecases/sign_up.dart';
+import 'package:nutrivision_capstone_project/features/auth/presentation/bloc/auth_session_bloc.dart';
 import 'package:nutrivision_capstone_project/features/home/data/repositories/in_memory_home_repository.dart';
 import 'package:nutrivision_capstone_project/features/home/domain/usecases/get_home_dashboard.dart';
 import 'package:nutrivision_capstone_project/features/home/presentation/bloc/home_bloc.dart';
@@ -21,13 +27,37 @@ import 'package:nutrivision_capstone_project/features/profile/domain/usecases/sa
 import 'package:nutrivision_capstone_project/features/profile/presentation/bloc/goals_dietary_bloc.dart';
 import 'package:nutrivision_capstone_project/features/profile/presentation/screens/goals_dietary_screen.dart';
 
+class _SignedInAuthRepository extends InMemoryAuthRepository {
+  @override
+  AuthUser? get currentUser => const AuthUser(
+    id: 'test-user',
+    name: 'Test User',
+    email: 'test@example.com',
+  );
+}
+
 class _TestHarness {
   _TestHarness() {
+    final authRepository = _SignedInAuthRepository();
+    authBloc = AuthSessionBloc(
+      repository: authRepository,
+      signIn: SignIn(authRepository),
+      signUp: SignUp(authRepository),
+      signOut: SignOut(authRepository),
+    );
     final onboardingRepo = InMemoryOnboardingRepository();
     onboardingBloc = OnboardingBloc(
       initialProfile: onboardingRepo.draft,
       saveDraft: SaveOnboardingDraft(onboardingRepo),
-      complete: CompleteOnboarding(onboardingRepo),
+      complete: CompleteOnboarding(
+        onboardingRepo,
+        getPreferences: GetGoalsDietaryPreferences(
+          LocalGoalsDietaryRepository(),
+        ),
+        savePreferences: SaveGoalsDietaryPreferences(
+          LocalGoalsDietaryRepository(),
+        ),
+      ),
     );
     homeBloc = HomeBloc(GetHomeDashboard(InMemoryHomeRepository()));
     repository = LocalGoalsDietaryRepository(
@@ -40,6 +70,7 @@ class _TestHarness {
   }
 
   late final OnboardingBloc onboardingBloc;
+  late final AuthSessionBloc authBloc;
   late final HomeBloc homeBloc;
   late final LocalGoalsDietaryRepository repository;
   late final GoalsDietaryBloc bloc;
@@ -47,6 +78,7 @@ class _TestHarness {
   Future<void> dispose() async {
     AppToast.dismiss();
     await bloc.close();
+    await authBloc.close();
     await onboardingBloc.close();
     await homeBloc.close();
   }
@@ -82,6 +114,7 @@ class _TestHarness {
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider.value(value: authBloc),
         BlocProvider.value(value: onboardingBloc),
         BlocProvider.value(value: homeBloc),
         BlocProvider.value(value: bloc),
@@ -115,7 +148,7 @@ void main() {
       expect(find.text('Your goal'), findsOneWidget);
       expect(find.text('Eat Healthier'), findsOneWidget);
       expect(find.text('Allergies'), findsOneWidget);
-      expect(find.text('Peanuts'), findsOneWidget);
+      expect(find.text('No allergies selected'), findsOneWidget);
       expect(find.text('Edit allergies'), findsOneWidget);
       expect(find.text('Your daily targets'), findsOneWidget);
       expect(find.text('Calories'), findsOneWidget);
@@ -126,12 +159,10 @@ void main() {
       // All five daily targets MUST initialize to zero ('0').
       expect(find.text('0'), findsNWidgets(5));
       expect(find.text('Dietary pattern'), findsOneWidget);
-      expect(find.text('Flexitarian'), findsOneWidget);
+      expect(find.text('No preference'), findsOneWidget);
       expect(find.text('Food preferences'), findsOneWidget);
-      expect(find.text('Alcohol'), findsOneWidget);
-      expect(find.text('Oats'), findsOneWidget);
-      expect(find.text('Berries'), findsOneWidget);
-      expect(find.text('Salmon'), findsOneWidget);
+      expect(find.text('No excluded ingredients'), findsOneWidget);
+      expect(find.text('No liked foods selected'), findsOneWidget);
       expect(find.text('Save changes'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
       expect(

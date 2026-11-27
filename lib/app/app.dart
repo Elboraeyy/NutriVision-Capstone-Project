@@ -92,7 +92,15 @@ class NutriVisionApp extends StatelessWidget {
               return OnboardingBloc(
                 initialProfile: repository.draft,
                 saveDraft: SaveOnboardingDraft(repository),
-                complete: CompleteOnboarding(repository),
+                complete: CompleteOnboarding(
+                  repository,
+                  getPreferences: GetGoalsDietaryPreferences(
+                    context.read<GoalsDietaryRepository>(),
+                  ),
+                  savePreferences: SaveGoalsDietaryPreferences(
+                    context.read<GoalsDietaryRepository>(),
+                  ),
+                ),
               );
             },
           ),

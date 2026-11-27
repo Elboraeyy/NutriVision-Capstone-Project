@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_responsive.dart';
 import '../../../../core/widgets/app_action_button.dart';
 import '../../../../core/widgets/app_toast.dart';
+import '../../../auth/presentation/bloc/auth_session_bloc.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_widgets.dart';
 
@@ -78,10 +79,29 @@ class AllergiesScreen extends StatelessWidget {
               ),
               SizedBox(height: AppResponsive.value(context, 10)),
               AppActionButton(
-                label: 'Save & go to Home',
-                onPressed: () => context.read<OnboardingBloc>().add(
-                  const OnboardingCompleted(),
-                ),
+                label: state.status == OnboardingStatus.saving
+                    ? 'Saving…'
+                    : 'Save & go to Home',
+                onPressed: state.status == OnboardingStatus.saving
+                    ? null
+                    : () {
+                        final userId = context
+                            .read<AuthSessionBloc>()
+                            .state
+                            .user
+                            ?.id;
+                        if (userId == null || userId.isEmpty) {
+                          AppToast.show(
+                            context,
+                            message: 'Sign in before saving your preferences.',
+                            type: AppToastType.error,
+                          );
+                          return;
+                        }
+                        context.read<OnboardingBloc>().add(
+                          OnboardingCompleted(userId: userId),
+                        );
+                      },
               ),
               SizedBox(height: AppResponsive.value(context, 12)),
             ],

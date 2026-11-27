@@ -12,16 +12,24 @@ class LocalGoalsDietaryRepository implements GoalsDietaryRepository {
   final GoalsDietaryLocalDataSource _localDataSource;
 
   @override
-  Future<GoalsDietaryPreferences?> getSavedPreferences() async {
-    final raw = await _localDataSource.readRawPreferences();
+  Future<GoalsDietaryPreferences?> getSavedPreferences({
+    required String userId,
+  }) async {
+    final raw = await _localDataSource.readRawPreferences(userId: userId);
     return GoalsDietaryPreferencesModel.tryDecode(raw);
   }
 
   @override
-  Future<void> savePreferences(GoalsDietaryPreferences preferences) async {
+  Future<void> savePreferences({
+    required String userId,
+    required GoalsDietaryPreferences preferences,
+  }) async {
     final encoded = GoalsDietaryPreferencesModel(
       preferences: preferences,
     ).encode();
-    await _localDataSource.writeRawPreferences(encoded);
+    await _localDataSource.writeRawPreferences(
+      userId: userId,
+      encodedJson: encoded,
+    );
   }
 }

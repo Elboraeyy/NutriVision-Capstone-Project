@@ -7,5 +7,6 @@ class GetGoalsDietaryPreferences {
 
   final GoalsDietaryRepository _repository;
 
-  Future<GoalsDietaryPreferences?> call() => _repository.getSavedPreferences();
+  Future<GoalsDietaryPreferences?> call({required String userId}) =>
+      _repository.getSavedPreferences(userId: userId);
 }

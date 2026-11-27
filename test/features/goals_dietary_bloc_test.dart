@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:nutrivision_capstone_project/features/onboarding/domain/entities/onboarding_profile.dart';
 import 'package:nutrivision_capstone_project/features/profile/data/datasources/goals_dietary_local_datasource.dart';
 import 'package:nutrivision_capstone_project/features/profile/data/models/goals_dietary_preferences_model.dart';
 import 'package:nutrivision_capstone_project/features/profile/data/repositories/local_goals_dietary_repository.dart';
@@ -37,7 +36,7 @@ void main() {
         localDataSource: SharedPrefsGoalsDietaryLocalDataSource(),
       );
 
-      expect(await repository.getSavedPreferences(), isNull);
+      expect(await repository.getSavedPreferences(userId: 'user-a'), isNull);
 
       const prefs = GoalsDietaryPreferences(
         goal: 'Build Muscle',
@@ -54,9 +53,10 @@ void main() {
         likedFoods: ['Oats', 'Lentils'],
       );
 
-      await repository.savePreferences(prefs);
-      final restored = await repository.getSavedPreferences();
+      await repository.savePreferences(userId: 'user-a', preferences: prefs);
+      final restored = await repository.getSavedPreferences(userId: 'user-a');
       expect(restored, prefs);
+      expect(await repository.getSavedPreferences(userId: 'user-b'), isNull);
     },
   );
 
@@ -86,6 +86,7 @@ void main() {
           excludedIngredients: ['Alcohol', 'alcohol'],
           likedFoods: ['Oats', 'Peanuts', 'Berries', 'oats'],
         ),
+        userId: 'user-a',
       );
 
       expect(saved.allergies, ['Peanuts', 'Soy']);
@@ -94,44 +95,32 @@ void main() {
     },
   );
 
-  test(
-    'GoalsDietaryBloc initializes all targets to zero and preserves onboarding values',
-    () async {
-      final repository = LocalGoalsDietaryRepository(
-        localDataSource: SharedPrefsGoalsDietaryLocalDataSource(),
-      );
-      final bloc = GoalsDietaryBloc(
-        getPreferences: GetGoalsDietaryPreferences(repository),
-        savePreferences: SaveGoalsDietaryPreferences(repository),
-      );
+  test('GoalsDietaryBloc uses neutral values when no data was saved', () async {
+    final repository = LocalGoalsDietaryRepository(
+      localDataSource: SharedPrefsGoalsDietaryLocalDataSource(),
+    );
+    final bloc = GoalsDietaryBloc(
+      getPreferences: GetGoalsDietaryPreferences(repository),
+      savePreferences: SaveGoalsDietaryPreferences(repository),
+    );
 
-      bloc.add(
-        const GoalsDietaryStarted(
-          onboardingProfile: OnboardingProfile(
-            goal: 'Build Muscle',
-            dietaryPreferences: {'Pescatarian'},
-            favoriteFoods: {'Salmon', 'Rice'},
-            allergies: {'Shellfish'},
-          ),
-        ),
-      );
-      await bloc.stream.firstWhere((s) => s.status == GoalsDietaryStatus.ready);
+    bloc.add(const GoalsDietaryStarted(userId: 'user-a'));
+    await bloc.stream.firstWhere((s) => s.status == GoalsDietaryStatus.ready);
 
-      final draft = bloc.state.draftPreferences;
-      expect(draft.goal, 'Build Muscle');
-      expect(draft.dietaryPattern, 'Pescatarian');
-      expect(draft.likedFoods, ['Salmon', 'Rice']);
-      expect(draft.allergies, ['Shellfish']);
-      expect(draft.dailyTargets, const DailyTargets());
-      expect(draft.dailyTargets.calories, 0);
-      expect(draft.dailyTargets.protein, 0);
-      expect(draft.dailyTargets.carbohydrates, 0);
-      expect(draft.dailyTargets.fat, 0);
-      expect(draft.dailyTargets.water, 0);
+    final draft = bloc.state.draftPreferences;
+    expect(draft.goal, 'Eat Healthier');
+    expect(draft.dietaryPattern, 'No preference');
+    expect(draft.likedFoods, isEmpty);
+    expect(draft.allergies, isEmpty);
+    expect(draft.dailyTargets, const DailyTargets());
+    expect(draft.dailyTargets.calories, 0);
+    expect(draft.dailyTargets.protein, 0);
+    expect(draft.dailyTargets.carbohydrates, 0);
+    expect(draft.dailyTargets.fat, 0);
+    expect(draft.dailyTargets.water, 0);
 
-      await bloc.close();
-    },
-  );
+    await bloc.close();
+  });
 
   test(
     'GoalsDietaryBloc supports draft edits, cancel rollback, and save persistence',
@@ -144,7 +133,7 @@ void main() {
         savePreferences: SaveGoalsDietaryPreferences(repository),
       );
 
-      bloc.add(const GoalsDietaryStarted());
+      bloc.add(const GoalsDietaryStarted(userId: 'user-a'));
       await bloc.stream.firstWhere((s) => s.status == GoalsDietaryStatus.ready);
 
       bloc.add(const GoalPreferenceChanged('Lose Weight'));
@@ -154,7 +143,7 @@ void main() {
       bloc.add(const DietaryPatternChanged('Vegan'));
       await pumpEventQueue();
       expect(bloc.state.hasUnsavedChanges, isTrue);
-      expect(await repository.getSavedPreferences(), isNull);
+      expect(await repository.getSavedPreferences(userId: 'user-a'), isNull);
 
       // Cancel discards draft changes without saving.
       bloc.add(const GoalsDietaryChangesCancelled());
@@ -162,8 +151,8 @@ void main() {
       expect(bloc.state.hasUnsavedChanges, isFalse);
       expect(bloc.state.draftPreferences.goal, 'Eat Healthier');
       expect(bloc.state.draftPreferences.dailyTargets.calories, 0);
-      expect(bloc.state.draftPreferences.dietaryPattern, 'Flexitarian');
-      expect(await repository.getSavedPreferences(), isNull);
+      expect(bloc.state.draftPreferences.dietaryPattern, 'No preference');
+      expect(await repository.getSavedPreferences(userId: 'user-a'), isNull);
 
       // Edit again and save.
       bloc.add(
@@ -173,13 +162,54 @@ void main() {
       await bloc.stream.firstWhere((s) => s.status == GoalsDietaryStatus.saved);
 
       expect(bloc.state.hasUnsavedChanges, isFalse);
-      final persisted = await repository.getSavedPreferences();
+      final persisted = await repository.getSavedPreferences(userId: 'user-a');
       expect(persisted?.dailyTargets.protein, 110);
       expect(persisted?.dailyTargets.calories, 0);
 
       await bloc.close();
     },
   );
+
+  test('GoalsDietaryBloc reloads saved edits for the same user only', () async {
+    final repository = LocalGoalsDietaryRepository(
+      localDataSource: SharedPrefsGoalsDietaryLocalDataSource(),
+    );
+    final bloc = GoalsDietaryBloc(
+      getPreferences: GetGoalsDietaryPreferences(repository),
+      savePreferences: SaveGoalsDietaryPreferences(repository),
+    );
+    bloc.add(const GoalsDietaryStarted(userId: 'nancy@example.com'));
+    await bloc.stream.firstWhere(
+      (state) => state.status == GoalsDietaryStatus.ready,
+    );
+    bloc.add(const GoalPreferenceChanged('Gain Weight'));
+    bloc.add(const LikedFoodsUpdated(['Rice', 'Lentils']));
+    bloc.add(const AllergiesUpdated([]));
+    await pumpEventQueue();
+    bloc.add(const GoalsDietarySaved());
+    await bloc.stream.firstWhere(
+      (state) => state.status == GoalsDietaryStatus.saved,
+    );
+    await bloc.close();
+
+    final reopened = GoalsDietaryBloc(
+      getPreferences: GetGoalsDietaryPreferences(repository),
+      savePreferences: SaveGoalsDietaryPreferences(repository),
+    );
+    reopened.add(const GoalsDietaryStarted(userId: 'nancy@example.com'));
+    await reopened.stream.firstWhere(
+      (state) => state.status == GoalsDietaryStatus.ready,
+    );
+    expect(reopened.state.draftPreferences.goal, 'Gain Weight');
+    expect(reopened.state.draftPreferences.likedFoods, ['Rice', 'Lentils']);
+    expect(reopened.state.draftPreferences.allergies, isEmpty);
+    await reopened.close();
+
+    final otherUser = await repository.getSavedPreferences(
+      userId: 'another@example.com',
+    );
+    expect(otherUser, isNull);
+  });
 
   test(
     'GoalsDietaryBloc rejects negative target and prevents liked foods overriding allergies',
@@ -192,7 +222,7 @@ void main() {
         savePreferences: SaveGoalsDietaryPreferences(repository),
       );
 
-      bloc.add(const GoalsDietaryStarted());
+      bloc.add(const GoalsDietaryStarted(userId: 'user-a'));
       await bloc.stream.firstWhere((s) => s.status == GoalsDietaryStatus.ready);
 
       bloc.add(
@@ -201,6 +231,14 @@ void main() {
       await pumpEventQueue();
       expect(bloc.state.status, GoalsDietaryStatus.failure);
       expect(bloc.state.draftPreferences.dailyTargets.fat, 0);
+
+      final allergyUpdate = bloc.stream.firstWhere(
+        (state) =>
+            state.status == GoalsDietaryStatus.ready &&
+            state.draftPreferences.allergies.contains('Peanuts'),
+      );
+      bloc.add(const AllergiesUpdated(['Peanuts']));
+      await allergyUpdate;
 
       bloc.add(const LikedFoodsUpdated(['Oats', 'Peanuts']));
       await pumpEventQueue();

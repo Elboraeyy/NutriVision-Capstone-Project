@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../onboarding/domain/entities/onboarding_profile.dart';
 import '../../domain/entities/goals_dietary_preferences.dart';
 import '../../domain/usecases/get_goals_dietary_preferences.dart';
 import '../../domain/usecases/save_goals_dietary_preferences.dart';
@@ -15,6 +14,7 @@ class GoalsDietaryState {
     this.savedPreferences = const GoalsDietaryPreferences(),
     this.draftPreferences = const GoalsDietaryPreferences(),
     this.hasPersistedPreferences = false,
+    this.userId,
     this.message,
   });
 
@@ -22,6 +22,7 @@ class GoalsDietaryState {
   final GoalsDietaryPreferences savedPreferences;
   final GoalsDietaryPreferences draftPreferences;
   final bool hasPersistedPreferences;
+  final String? userId;
   final String? message;
 
   bool get hasUnsavedChanges => draftPreferences != savedPreferences;
@@ -31,6 +32,7 @@ class GoalsDietaryState {
     GoalsDietaryPreferences? savedPreferences,
     GoalsDietaryPreferences? draftPreferences,
     bool? hasPersistedPreferences,
+    String? userId,
     String? message,
     bool clearMessage = false,
   }) {
@@ -40,6 +42,7 @@ class GoalsDietaryState {
       draftPreferences: draftPreferences ?? this.draftPreferences,
       hasPersistedPreferences:
           hasPersistedPreferences ?? this.hasPersistedPreferences,
+      userId: userId ?? this.userId,
       message: clearMessage ? null : message,
     );
   }
@@ -50,9 +53,9 @@ abstract class GoalsDietaryEvent {
 }
 
 class GoalsDietaryStarted extends GoalsDietaryEvent {
-  const GoalsDietaryStarted({this.onboardingProfile});
+  const GoalsDietaryStarted({required this.userId});
 
-  final OnboardingProfile? onboardingProfile;
+  final String userId;
 }
 
 class GoalPreferenceChanged extends GoalsDietaryEvent {
@@ -129,15 +132,15 @@ class GoalsDietaryBloc extends Bloc<GoalsDietaryEvent, GoalsDietaryState> {
       state.copyWith(status: GoalsDietaryStatus.loading, clearMessage: true),
     );
     try {
-      final saved = await _getPreferences();
-      final baseline =
-          saved ?? _buildInitialPreferences(event.onboardingProfile);
+      final saved = await _getPreferences(userId: event.userId);
+      final baseline = saved ?? _emptyPreferences();
       emit(
         state.copyWith(
           status: GoalsDietaryStatus.ready,
           savedPreferences: baseline,
           draftPreferences: baseline,
           hasPersistedPreferences: saved != null,
+          userId: event.userId,
           clearMessage: true,
         ),
       );
@@ -151,53 +154,15 @@ class GoalsDietaryBloc extends Bloc<GoalsDietaryEvent, GoalsDietaryState> {
     }
   }
 
-  GoalsDietaryPreferences _buildInitialPreferences(
-    OnboardingProfile? onboarding,
-  ) {
-    if (onboarding == null) {
-      return const GoalsDietaryPreferences();
-    }
-
-    final rawGoal = onboarding.goal?.trim();
-    final goal = rawGoal != null && rawGoal.isNotEmpty
-        ? _normalizeGoal(rawGoal)
-        : GoalsDietaryPreferences.defaultGoal;
-
-    final List<String> allergies;
-    if (onboarding.noAllergies) {
-      allergies = const [];
-    } else if (onboarding.allergies.isNotEmpty) {
-      allergies = onboarding.allergies.toList();
-    } else {
-      allergies = GoalsDietaryPreferences.defaultAllergies;
-    }
-
-    final dietaryPattern = onboarding.dietaryPreferences.isNotEmpty
-        ? onboarding.dietaryPreferences.first
-        : GoalsDietaryPreferences.defaultDietaryPattern;
-
-    final likedFoods = onboarding.favoriteFoods.isNotEmpty
-        ? onboarding.favoriteFoods.toList()
-        : GoalsDietaryPreferences.defaultLikedFoods;
-
-    return GoalsDietaryPreferences(
-      goal: goal,
-      allergies: allergies,
-      // All five daily targets MUST initialize to zero for a new profile.
-      dailyTargets: const DailyTargets(),
-      dietaryPattern: dietaryPattern,
-      excludedIngredients: GoalsDietaryPreferences.defaultExcludedIngredients,
-      likedFoods: likedFoods,
+  GoalsDietaryPreferences _emptyPreferences() {
+    return const GoalsDietaryPreferences(
+      goal: GoalsDietaryPreferences.defaultGoal,
+      allergies: [],
+      dailyTargets: DailyTargets(),
+      dietaryPattern: 'No preference',
+      excludedIngredients: [],
+      likedFoods: [],
     );
-  }
-
-  String _normalizeGoal(String goal) {
-    for (final available in GoalsDietaryPreferences.availableGoals) {
-      if (available.toLowerCase() == goal.toLowerCase()) {
-        return available;
-      }
-    }
-    return goal;
   }
 
   void _onGoalChanged(
@@ -349,7 +314,14 @@ class GoalsDietaryBloc extends Bloc<GoalsDietaryEvent, GoalsDietaryState> {
   ) async {
     emit(state.copyWith(status: GoalsDietaryStatus.saving, clearMessage: true));
     try {
-      final saved = await _savePreferences(state.draftPreferences);
+      final userId = state.userId;
+      if (userId == null || userId.isEmpty) {
+        throw StateError('An authenticated user is required to save settings.');
+      }
+      final saved = await _savePreferences(
+        state.draftPreferences,
+        userId: userId,
+      );
       emit(
         state.copyWith(
           status: GoalsDietaryStatus.saved,
